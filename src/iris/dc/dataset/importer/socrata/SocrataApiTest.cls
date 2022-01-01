@@ -109,6 +109,8 @@ Method InstallDatasetTest6()
 
 Method InstallBigDatasetTest1()
 {
+    // caution: a 1,7GB dataset will be installed
+    // todo: starts a async download, with progress report capability
     Do ..Api.InstallDataset({
         "datasetId": "ijzp-q8t2"
     })
