@@ -2,6 +2,9 @@
 Class dc.dataset.importer.socrata.SocrataApi Extends %RegisteredObject
 {
 
+/// Description
+Parameter Provider = "socrata";
+
 Property DefaultCsvDel As %String [ InitialExpression = "," ];
 
 Property DefaultPackage As %String [ InitialExpression = "dc.dataset.imported" ];
@@ -20,7 +23,7 @@ Method %OnNew() As %Status
     Return $$$OK
 }
 
-Method InstallDataset(pDatasetParams As %DynamicObject)
+Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
 {
     Set datasetId = pDatasetParams.datasetId
 
@@ -40,17 +43,26 @@ Method InstallDataset(pDatasetParams As %DynamicObject)
     Set className = ..GetClassName(pDatasetParams)
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
-    Do ##class(community.csvgen).Generate(fileName, , fqn)
+    $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, 0))
+
+    If ('pDatasetParams.keepFile) {
+        $$$TOE(st, ##class(%File).Delete(fileName))
+    }
+
+    Return {
+        "className": (fqn),
+        "columns": (rowType),
+        "records": (recordsCount)
+    }
 }
 
-Method FixCsvHeader()
+Method FixCsvHeader() [ Private ]
 {
     Set csvDel = $Case(..DownloadInfo.CsvDel, "":..DefaultCsvDel, :..DownloadInfo.CsvDel)
     Set csvHeader = ""
     Set headerLength = 0
 
     // analyze the csv header looking for break lines in header
-    Set mustRewrite = 0
     Set stream = ##class(%Stream.FileCharacter).%New()
     $$$TOE(st, stream.LinkToFile(..DownloadInfo.fileName))
     While 'stream.AtEnd {
@@ -60,25 +72,25 @@ Method FixCsvHeader()
 
         Set hasBreaklineCols = ($Length(csvHeader, """") # 2) = 0
         Quit:('hasBreaklineCols)
-
-        Set mustRewrite = 1
     }
     Kill stream
 
     // fix the CSV file header
-    If (mustRewrite) {
-        Set file = ##class(%File).%New(..DownloadInfo.fileName)
-        $$$TOE(st, file.Open("W"))
-        Set csvHeader = ..FixColName(csvHeader)
-        Do file.Write(csvHeader)
-        For line = $Length(csvHeader):1:headerLength {
+    Set file = ##class(%File).%New(..DownloadInfo.fileName)
+    $$$TOE(st, file.Open("W"))
+    Set fixedCsvHeader = ..FixColName(csvHeader)
+    Do file.Write(fixedCsvHeader)
+    Set actualLength = $Length(csvHeader)
+    If (actualLength '= headerLength) {
+        // fills the "removed" chars with space
+        For line = actualLength:1:headerLength {
             Do file.Write(" ")
         }
-        Do file.Close()
     }
+    Do file.Close()
 }
 
-Method FixColName(pColName As %String) As %String
+Method FixColName(pColName As %String) As %String [ Private ]
 {
     // insert here all kind of rule for fixing col name translation to IRIS class properties...
     Set pColName = $Translate(pColName, "()", "")   // remove brackets

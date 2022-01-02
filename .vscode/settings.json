@@ -12,7 +12,10 @@
         "service": "iris",
         "internalPort": 52773
       },
-      "active": true
+      "active": true,
+      "links": {
+        "Importer API": "http://localhost:${port}/swagger-ui/index.html?url=/dataset/importer/_spec"
+      }
     },
     "sqltools.connections": [
       {
