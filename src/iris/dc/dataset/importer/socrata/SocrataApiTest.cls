@@ -67,49 +67,44 @@ Method DownloadDataset3()
 
 Method InstallDatasetTest1()
 {
-    Do ..Api.InstallDataset({
+    ZW ..Api.InstallDataset({
         "datasetId": "fx5g-857s"
     })
 }
 
 Method InstallDatasetTest2()
 {
-    Do ..Api.InstallDataset({
+    ZW ..Api.InstallDataset({
         "datasetId": "hdpu-mku8"
     })
 }
 
 Method InstallDatasetTest3()
 {
-    Do ..Api.InstallDataset({
+    ZW ..Api.InstallDataset({
         "datasetId": "n9tp-i3k3"
     })
 }
 
 Method InstallDatasetTest4()
 {
-    Do ..Api.InstallDataset({
+    ZW ..Api.InstallDataset({
         "datasetId": "emzy-79p5"
     })
 }
 
 Method InstallDatasetTest5()
 {
-    Do ..Api.InstallDataset({
-        "datasetId": "vzxr-ymut"
-    })
-}
-
-Method InstallDatasetTest6()
-{
-    Do ..Api.InstallDataset({
+    ZW ..Api.InstallDataset({
         "datasetId": "vzxr-ymut"
     })
 }
 
 Method InstallBigDatasetTest1()
 {
-    Do ..Api.InstallDataset({
+    // caution: a 1,7GB dataset will be installed
+    // todo: starts a async download, with progress report capability
+    ZW ..Api.InstallDataset({
         "datasetId": "ijzp-q8t2"
     })
 }

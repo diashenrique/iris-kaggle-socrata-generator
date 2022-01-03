@@ -7,6 +7,5 @@ do $SYSTEM.OBJ.Load("/opt/irisbuild/Installer.cls", "ck")
 set sc = ##class(App.Installer).setup() 
 
 zn "IRISAPP"
-zpm "install csvgen"
 zpm "load /opt/irisbuild/ -v":1:1
 halt
