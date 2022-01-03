@@ -2,29 +2,25 @@
  [![Quality Gate Status](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Fintersystems-iris-dev-template&metric=alert_status)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Fintersystems-iris-dev-template)
  [![Reliability Rating](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Fintersystems-iris-dev-template&metric=reliability_rating)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Fintersystems-iris-dev-template)
 
-# intersystems-iris-dev-template
-This is a basic template to develop with InterSystems IRIS
+# IRIS Kaggle Socrata Generator
+Do you need some real data to use in your projects?
 
-## Description
-* The template uses InterSystems IRIS Community Edition running in a docker container
-* It uses ZPM Package Manager to load InterSystems ObjectScript
-* It creates a Namespace IRISAPP without interoperability Enabled
-* It is designed to develop with Package First paradigm
+Why not use real data from the best sources?!
 
-## Usage
-start a new dev repository with InterSystems IRIS using this one as a template.
-Once you clone the new repo on your laptop and open the VSCode with installed InterSystems Pack you'll be able to start development immediately
+Our goal it's to allow every developer find and use the best dataset possible for their projects, in a quick and easy way.
 
 ## Prerequisites
 Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
 
-## Installation 
-Clone/git pull the repo into any local directory
+## Installation
+
+1. Clone/git pull the repo into any local directory
+
 ```
-$ git clone https://github.com/intersystems-community/intersystems-iris-dev-template.git
+$ git clone https://github.com/diashenrique/iris-rad-studio.git
 ```
 
-Open the terminal in this directory and run:
+2. Open the terminal in this directory and run:
 
 ```
 $ docker-compose build
@@ -38,44 +34,42 @@ $ docker-compose up -d
 
 ## How to Test it
 
-Open IRIS terminal:
+For this initial release, we are using Socrata APIs to search and download and speficic dataset.
+
+Open the API tool of your preference like [Postman](https://www.postman.com/), [Hoppscotch](https://hoppscotch.io/) 
 
 ```
-$ docker-compose exec iris iris session iris
-IRISAPP>write ##class(dc.PackageSample.ObjectScript).Test()
+GET> https://api.us.socrata.com/api/catalog/v1?only=dataset&q=healthcare
 ```
-## How to start coding
-This repository is ready to code in VSCode with ObjectScript plugin.
-Install [VSCode](https://code.visualstudio.com/), [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) and [ObjectScript](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript) plugin and open the folder in VSCode.
-Open /src/cls/PackageSample/ObjectScript.cls class and try to make changes - it will be compiled in running IRIS docker container.
-![docker_compose](https://user-images.githubusercontent.com/2781759/76656929-0f2e5700-6547-11ea-9cc9-486a5641c51d.gif)
+This endpoint will return all healthcare related datasets, like the image below: 
+![Socrata Return Dataset](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/socrata_return.png)
 
-Feel free to delete PackageSample folder and place your ObjectScript classes in a form
-/src/Package/Classname.cls
-[Read more about folder setup for InterSystems ObjectScript](https://community.intersystems.com/post/simplified-objectscript-source-folder-structure-package-manager)
+Now, get the ID. In this case the id is: "n9tp-i3k3"
 
-The script in Installer.cls will import everything you place under /src into IRIS.
+Go the the terminal
 
+```
+IRISAPP>set api = ##class(dc.dataset.importer.socrata.SocrataApi).%New()
 
-## What's inside the repository
+IRISAPP>do api.InstallDataset({"datasetId": "n9tp-i3k3"})
 
-### Dockerfile
+Compilation started on 01/01/2022 20:54:15 with qualifiers
+"cuk"
+Compiling classdc.dataset.imported.DsCommunityHealthcarecenters
+Compiling table d dataset_imported.DsCommunityHealthcareCenters
+Compiling routinedc.dataset.imported.DsCommunityHealthcareCenters.1
+Compilation finished successfully in 0.0985.
 
-The simplest dockerfile which starts IRIS and imports code from /src folder into it.
-Use the related docker-compose.yml to easily setup additional parametes like port number and where you map keys and host folders.
+Class name:dc.dataset.imported.DsCommunityHealthcareCenters
+Header: Name VARCHAR (250),Description VARCHAR(25A), Location VARCHAR(258), Phone Number VARCHAR(254) , geom VARCHAR (250)
+Records imported: 26
+```
 
+After the command above, your dataset it's ready to use! 
+![Socrata Return Dataset](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/socrata_sql_afterImport.png)
 
-### src folder
-src/iris contains InterSystems IRIS Objectscript code
-src/java containers Java code 
-src/python - python code, etc.
+## Dream team
 
-
-### .vscode/settings.json
-
-Settings file to let you immedietly code in VSCode with [VSCode ObjectScript plugin](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript))
-
-### .vscode/launch.json
-Config file if you want to debug with VSCode ObjectScript
-
-[Read about all the files in this artilce](https://community.intersystems.com/post/dockerfile-and-friends-or-how-run-and-collaborate-objectscript-projects-intersystems-iris)
+* [Henrique Dias](https://community.intersystems.com/user/henrique-dias-2)
+* [José Roberto Pereira](https://community.intersystems.com/user/jos%C3%A9-roberto-pereira-0)
+  
