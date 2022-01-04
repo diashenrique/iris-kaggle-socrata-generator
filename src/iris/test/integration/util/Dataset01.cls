@@ -1,18 +1,8 @@
-/// Description
-Class test.integration.util.Dataset01
-{
-
 /// Dataset with columns name as numbers and with brackets
-XData Dataset01 [ MimeType = text/plain ]
+Class test.integration.util.Dataset01 Extends %RegisteredObject
 {
-Score Type,2015-16,2016-17,2017-18,2018-19,Head Start FACES 2009,EA Validation Study (2013-2014),SPP Goal
-Classroom Organization,5.67,5.55,5.96,6.25,4.7,5.26,6
-Emotional Support,6.14,6.29,6.38,6.61,5.3,5.96,6
-Instructional Support,2.65,3.06,3.42,3.18,2.3,2.34,4.5
-Non- FCC Classroom Count,14,32,48,73,,,
-}
 
-XData Dataset01Catalog [ MimeType = application/json ]
+XData Catalog [ MimeType = application/json ]
 {
 {
   "results" :
@@ -136,6 +126,15 @@ XData Dataset01Catalog [ MimeType = application/json ]
   "timings" : { "serviceMillis" : 40, "searchMillis" : [ 13, 7 ] },
   "warnings" : []
 }
+}
+
+XData CsvFile [ MimeType = text/plain ]
+{
+Score Type,2015-16,2016-17,2017-18,2018-19,Head Start FACES 2009,EA Validation Study (2013-2014),SPP Goal
+Classroom Organization,5.67,5.55,5.96,6.25,4.7,5.26,6
+Emotional Support,6.14,6.29,6.38,6.61,5.3,5.96,6
+Instructional Support,2.65,3.06,3.42,3.18,2.3,2.34,4.5
+Non- FCC Classroom Count,14,32,48,73,,,
 }
 
 }

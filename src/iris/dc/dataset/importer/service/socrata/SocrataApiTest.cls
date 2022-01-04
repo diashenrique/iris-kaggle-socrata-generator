@@ -68,16 +68,14 @@ Method DownloadDataset3()
 Method InstallDatasetTest1()
 {
     ZW ..Api.InstallDataset({
-        "datasetId": "fx5g-857s",
-        "keepFile": true
+        "datasetId": "fx5g-857s"
     })
 }
 
 Method InstallDatasetTest2()
 {
     ZW ..Api.InstallDataset({
-        "datasetId": "hdpu-mku8",
-        "keepFile": true
+        "datasetId": "hdpu-mku8"
     })
 }
 
