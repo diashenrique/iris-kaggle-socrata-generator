@@ -6,8 +6,8 @@ Class dc.dataset.importer.service.ImporterService Extends %RegisteredObject
 Method Import(pParams As %DynamicObject) As %DynamicObject
 {
     Set response = {}
-    If (pParams.provider = ##class(dc.dataset.importer.socrata.SocrataApi).#Provider) {
-        Set socrataApi = ##class(dc.dataset.importer.socrata.SocrataApi).%New()
+    If (pParams.provider = ##class(dc.dataset.importer.service.socrata.SocrataApi).#Provider) {
+        Set socrataApi = ##class(dc.dataset.importer.service.socrata.SocrataApi).%New()
         Set response = socrataApi.InstallDataset({
             "datasetId": (pParams.datasetId)
         })

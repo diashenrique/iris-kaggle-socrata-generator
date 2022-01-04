@@ -1,5 +1,5 @@
 /// Description
-Class dc.dataset.importer.socrata.SocrataApi Extends %RegisteredObject
+Class dc.dataset.importer.service.socrata.SocrataApi Extends %RegisteredObject
 {
 
 /// Description
@@ -15,11 +15,15 @@ Property Catalog As %DynamicObject [ Private ];
 
 Property DownloadInfo As %DynamicObject [ Private ];
 
-Property HttpUtil As dc.dataset.importer.socrata.HttpUtil [ Private ];
+Property HttpUtil As dc.dataset.importer.service.socrata.HttpUtil [ Private ];
 
-Method %OnNew() As %Status
+Method %OnNew(pHttpUtilInstance As dc.dataset.importer.service.socrata.HttpUtil = "") As %Status
 {
-    Set ..HttpUtil = ##class(dc.dataset.importer.socrata.HttpUtil).%New()
+    If (pHttpUtilInstance = "") {
+        Set ..HttpUtil = ##class(dc.dataset.importer.service.socrata.HttpUtil).%New()
+    } Else {
+        Set ..HttpUtil = pHttpUtilInstance
+    }
     Return $$$OK
 }
 
@@ -80,7 +84,8 @@ Method FixCsvHeader() [ Private ]
     $$$TOE(st, file.Open("W"))
     Set fixedCsvHeader = ..FixColName(csvHeader)
     Do file.Write(fixedCsvHeader)
-    Set actualLength = $Length(csvHeader)
+    #; Set actualLength = $Length(csvHeader)
+    Set actualLength = $Length(fixedCsvHeader) + 1
     If (actualLength '= headerLength) {
         // fills the "removed" chars with space
         For line = actualLength:1:headerLength {

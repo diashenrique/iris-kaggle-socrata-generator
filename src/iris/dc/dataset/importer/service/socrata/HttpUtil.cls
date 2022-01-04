@@ -1,8 +1,16 @@
 /// Description
-Class dc.dataset.importer.socrata.HttpUtil Extends %RegisteredObject
+Class dc.dataset.importer.service.socrata.HttpUtil Extends %RegisteredObject
 {
 
 Property SslConfiguration As %String [ InitialExpression = "ISC.FeatureTracker.SSL.Config" ];
+
+Property TempDir As %String;
+
+Method %OnNew() As %Status
+{
+    Set ..TempDir = ##class(%File).NormalizeDirectory(##class(%SYS.System).TempDirectory())
+    Return $$$OK
+}
 
 Method CreateHttpRequest(pHttpParams As %DynamicObject) As %Net.HttpRequest
 {
@@ -63,7 +71,7 @@ Method HttpDownload(pHttpParams As %DynamicObject) As %DynamicObject
     Set request = ..CreateHttpRequest(pHttpParams)
     $$$TOE(st, request.Get(pHttpParams.Url))
 
-    Set fileName = "/tmp/"_$REPLACE($REPLACE($NOW(), ".", ""), ",", "") // todo: usar metodo pardrao para pegar o diretorio tmp do sistema
+    Set fileName = ..TempDir_$Translate($Now(), ".,", "") // todo: usar metodo pardrao para pegar o diretorio tmp do sistema
     Set file = ##class(%FileBinaryStream).%New()
     $$$TOE(st, file.LinkToFile(fileName))
     $$$TOE(st, file.CopyFrom(request.HttpResponse.Data))

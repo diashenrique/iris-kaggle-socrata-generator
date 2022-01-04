@@ -1,12 +1,12 @@
 /// Description
-Class dc.dataset.importer.socrata.SocrataApiTest Extends %RegisteredObject
+Class dc.dataset.importer.service.socrata.SocrataApiTest Extends %RegisteredObject
 {
 
-Property Api As dc.dataset.importer.socrata.SocrataApi;
+Property Api As dc.dataset.importer.service.socrata.SocrataApi;
 
 Method %OnNew() As %Status
 {
-    Set ..Api = ##class(dc.dataset.importer.socrata.SocrataApi).%New()
+    Set ..Api = ##class(dc.dataset.importer.service.socrata.SocrataApi).%New()
     Return $$$OK
 }
 
@@ -68,14 +68,16 @@ Method DownloadDataset3()
 Method InstallDatasetTest1()
 {
     ZW ..Api.InstallDataset({
-        "datasetId": "fx5g-857s"
+        "datasetId": "fx5g-857s",
+        "keepFile": true
     })
 }
 
 Method InstallDatasetTest2()
 {
     ZW ..Api.InstallDataset({
-        "datasetId": "hdpu-mku8"
+        "datasetId": "hdpu-mku8",
+        "keepFile": true
     })
 }
 
