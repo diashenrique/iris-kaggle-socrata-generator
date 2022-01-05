@@ -5,8 +5,6 @@ Class dc.dataset.importer.service.socrata.SocrataApi Extends %RegisteredObject
 /// Description
 Parameter Provider = "socrata";
 
-Property DefaultCsvDel As %String [ InitialExpression = "," ];
-
 Property DefaultPackage As %String [ InitialExpression = "dc.dataset.imported" ];
 
 Property DatasetParams As %DynamicObject [ Private ];
@@ -66,7 +64,6 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
 
 Method FixCsvHeader() [ Private ]
 {
-    Set csvDel = $Case(..DownloadInfo.CsvDel, "":..DefaultCsvDel, :..DownloadInfo.CsvDel)
     Set csvHeader = ""
     Set headerLength = 0
 

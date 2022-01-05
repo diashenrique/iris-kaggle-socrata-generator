@@ -85,7 +85,7 @@ ClassMethod GetInfo() As %Status
 ClassMethod SwaggerSpec() As %Status
 {
     $$$TOE(st, ##class(%RoutineMgr).GetWebServerPort(.Port,.Server,.URLPrefix,.URL))
-    Set tSC = ##class(%REST.API).GetWebRESTApplication($NAMESPACE, %request.Application, .swagger)
+    $$$TOE(sc, ##class(%REST.API).GetWebRESTApplication($NAMESPACE, %request.Application, .swagger))
     Do swagger.info.%Remove("x-ISC_Namespace")
     Set swagger.basePath = ..#BasePath
     Set swagger.info.title = ..#Title

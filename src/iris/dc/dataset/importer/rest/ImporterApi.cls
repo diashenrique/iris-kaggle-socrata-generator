@@ -25,7 +25,6 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 /// Description
 ClassMethod SearchDataset() As %Status
 {
-    Set sc = $$$OK
     Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
     Set response = service.Search(%request.Content)
     Return ..ProcessResult($$$OK, response)
@@ -34,7 +33,6 @@ ClassMethod SearchDataset() As %Status
 /// Description
 ClassMethod ImportDataset() As %Status
 {
-    Set sc = $$$OK
     Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
     Set response = service.Import(%request.Content)
     Return ..ProcessResult($$$OK, response)
