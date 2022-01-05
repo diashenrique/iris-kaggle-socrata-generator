@@ -100,6 +100,14 @@ Method InstallDatasetTest5()
     })
 }
 
+Method InstallDatasetTest6()
+{
+    // todo: criar teste de instegração esperando um erro de content-type (retorna html ao invés de csv)
+    ZW ..Api.InstallDataset({
+        "datasetId": "tcej-pv7k"
+    })
+}
+
 Method InstallBigDatasetTest1()
 {
     // caution: a 1,7GB dataset will be installed

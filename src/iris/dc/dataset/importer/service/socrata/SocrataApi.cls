@@ -47,7 +47,11 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
     Set className = ..GetClassName(pDatasetParams)
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
-    $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, 0))
+    Try {
+        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, 0))
+    } Catch(e) {
+        Throw ##class(%Exception.General).%New(%sqlcontext.%Message)
+    }
 
     If ('pDatasetParams.keepFile) {
         $$$TOE(st, ##class(%File).Delete(fileName))
@@ -131,8 +135,17 @@ Method GetClassFQN(pPackageName As %String, pClassName As %String) As %String
     Return fqn
 }
 
-Method SearchDataset()
+Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
 {
+    Set searchParams = ""
+    If (pParams.terms '= "") {
+        Set $List(searchParams, * + 1) = "q="_$ZConvert(pParams.terms, "O", "URL")
+    }
+    Set searchParams = $LTS(searchParams, "&")
+    Set response = ..HttpUtil.HttpGetJson({
+        "Url": ("https://api.us.socrata.com/api/catalog/v1?only=datasets&"_searchParams)
+    })
+    Return response
 }
 
 }

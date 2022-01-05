@@ -11,13 +11,24 @@ Parameter BasePath = "/dataset/importer";
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-<!-- Socrata dataset importer -->
+<!-- Dataset search -->
+<Route Url="/search" Method="POST" Call="SearchDataset" Cors="true"/>
+<!-- Dataset importer -->
 <Route Url="/import" Method="POST" Call="ImportDataset" Cors="true"/>
 <!-- Server Info -->
 <Route Url="/" Method="GET" Call="GetInfo" Cors="true"/>
 <!-- Swagger specs -->
 <Route Url="/_spec" Method="GET" Call="SwaggerSpec" />
 </Routes>
+}
+
+/// Description
+ClassMethod SearchDataset() As %Status
+{
+    Set sc = $$$OK
+    Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
+    Set response = service.Search(%request.Content)
+    Return ..ProcessResult($$$OK, response)
 }
 
 /// Description

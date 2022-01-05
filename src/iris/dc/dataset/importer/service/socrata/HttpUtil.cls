@@ -71,6 +71,12 @@ Method HttpDownload(pHttpParams As %DynamicObject) As %DynamicObject
     Set request = ..CreateHttpRequest(pHttpParams)
     $$$TOE(st, request.Get(pHttpParams.Url))
 
+    // todo: refatorar esse metodo para ter um HttpDownloadCsv e deixar essa validação nesse novo metodo
+    Set respponseContentType = request.HttpResponse.ContentType
+    If (respponseContentType '= "text/csv") {
+        Throw ##class(%Exception.General).%New("Expected a response with ContentType=""text/csv"", got """_respponseContentType_ """ instead.")
+    }
+
     Set fileName = ..TempDir_$Translate($Now(), ".,", "") // todo: usar metodo pardrao para pegar o diretorio tmp do sistema
     Set file = ##class(%FileBinaryStream).%New()
     $$$TOE(st, file.LinkToFile(fileName))
