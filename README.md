@@ -49,19 +49,18 @@ Now, get the ID. In this case the id is: "n9tp-i3k3"
 Go the the terminal
 
 ```
-IRISAPP>set api = ##class(dc.dataset.importer.socrata.SocrataApi).%New()
+IRISAPP>set api = ##class(dc.dataset.importer.service.socrata.SocrataApi).%New()
 
-IRISAPP>do api.InstallDataset({"datasetId": "n9tp-i3k3"})
+IRISAPP>do api.InstallDataset({"datasetId": "n9tp-i3k3", "verbose":true})
 
-Compilation started on 01/01/2022 20:54:15 with qualifiers
-"cuk"
-Compiling classdc.dataset.imported.DsCommunityHealthcarecenters
-Compiling table d dataset_imported.DsCommunityHealthcareCenters
-Compiling routinedc.dataset.imported.DsCommunityHealthcareCenters.1
-Compilation finished successfully in 0.0985.
+Compilation started on 01/07/2022 01:01:28 with qualifiers 'cuk'
+Compiling class dc.dataset.imported.DsCommunityHealthcareCenters
+Compiling table dc_dataset_imported.DsCommunityHealthcareCenters
+Compiling routine dc.dataset.imported.DsCommunityHealthcareCenters.1
+Compilation finished successfully in 0.108s.
 
-Class name:dc.dataset.imported.DsCommunityHealthcareCenters
-Header: Name VARCHAR (250),Description VARCHAR(25A), Location VARCHAR(258), Phone Number VARCHAR(254) , geom VARCHAR (250)
+Class name: dc.dataset.imported.DsCommunityHealthcareCenters
+Header: Name VARCHAR(250),Description VARCHAR(250),Location VARCHAR(250),Phone_Number VARCHAR(250),geom VARCHAR(250)
 Records imported: 26
 ```
 
