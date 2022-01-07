@@ -46,21 +46,21 @@ Method DatasetQueryTest3()
 
 Method DownloadDataset1()
 {
-    Do ..Api.HttpDownload({
+    Do ..Api.HttpDownloadCsvFile({
         "Url": "https://data.seattle.gov/api/views/fx5g-857s/rows.csv?accessType=DOWNLOAD"
     })
 }
 
 Method DownloadDataset2()
 {
-    Do ..Api.HttpDownload({
+    Do ..Api.HttpDownloadCsvFile({
         "Url": "https://data.cityofnewyork.us/api/views/hdpu-mku8/rows.csv?accessType=DOWNLOAD"
     })
 }
 
 Method DownloadDataset3()
 {
-    Do ..Api.HttpDownload({
+    Do ..Api.HttpDownloadCsvFile({
         "Url": "https://data.cityofchicago.org/api/views/ijzp-q8t2/rows.csv?accessType=DOWNLOAD"
     })
 }

@@ -35,7 +35,7 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
     
     Set domain = ..Catalog.results.%Get(0).metadata.domain
     Set donwloadUrl = "https://"_domain_"/api/views/"_datasetId_"/rows.csv?accessType=DOWNLOAD"
-    Set ..DownloadInfo = ..HttpUtil.HttpDownload({
+    Set ..DownloadInfo = ..HttpUtil.HttpDownloadCsvFile({
         "Url": (donwloadUrl)
     })
 

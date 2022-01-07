@@ -46,7 +46,7 @@ Method TestInstallDataset01()
     Set ..HttpMock.HttpGetJsonResponseMock = {}.%FromJSON(..LoadXData(
         "test.integration.util.Dataset01||Catalog"
     ))
-    Set ..HttpMock.HttpDownloadResponseMock = ..LoadXData(
+    Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset01||CsvFile"
     )
     Set ..Response = ..Api.InstallDataset({
@@ -65,7 +65,7 @@ Method TestInstallDataset02()
     Set ..HttpMock.HttpGetJsonResponseMock = {}.%FromJSON(..LoadXData(
         "test.integration.util.Dataset02||Catalog"
     ))
-    Set ..HttpMock.HttpDownloadResponseMock = ..LoadXData(
+    Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset02||CsvFile"
     )
     Set ..Response = ..Api.InstallDataset({
@@ -84,7 +84,7 @@ Method TestInstallDataset03()
     Set ..HttpMock.HttpGetJsonResponseMock = {}.%FromJSON(..LoadXData(
         "test.integration.util.Dataset03||Catalog"
     ))
-    Set ..HttpMock.HttpDownloadResponseMock = ..LoadXData(
+    Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset03||CsvFile"
     )
     Set ..Response = ..Api.InstallDataset({
@@ -103,7 +103,7 @@ Method TestInstallDataset04()
     Set ..HttpMock.HttpGetJsonResponseMock = {}.%FromJSON(..LoadXData(
         "test.integration.util.Dataset04||Catalog"
     ))
-    Set ..HttpMock.HttpDownloadResponseMock = ..LoadXData(
+    Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset04||CsvFile"
     )
     Set ..Response = ..Api.InstallDataset({
@@ -122,7 +122,7 @@ Method TestInstallDataset05()
     Set ..HttpMock.HttpGetJsonResponseMock = {}.%FromJSON(..LoadXData(
         "test.integration.util.Dataset05||Catalog"
     ))
-    Set ..HttpMock.HttpDownloadResponseMock = ..LoadXData(
+    Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset05||CsvFile"
     )
     Set ..Response = ..Api.InstallDataset({

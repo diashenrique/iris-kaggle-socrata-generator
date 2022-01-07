@@ -64,29 +64,46 @@ Method HttpGetJson(pHttpParams As %DynamicObject) As %DynamicObject
     Return ##class(%DynamicObject).%FromJSON(json)
 }
 
-Method HttpDownload(pHttpParams As %DynamicObject) As %DynamicObject
+Method HttpDownloadCsvFile(pHttpParams As %DynamicObject) As %DynamicObject
 {
     Set retorno = {}
+
+    // todo: validate content-type using a HEAD
 
     Set request = ..CreateHttpRequest(pHttpParams)
     $$$TOE(st, request.Get(pHttpParams.Url))
 
-    // todo: refatorar esse metodo para ter um HttpDownloadCsv e deixar essa validação nesse novo metodo
-    Set respponseContentType = request.HttpResponse.ContentType
-    If (respponseContentType '= "text/csv") {
-        Throw ##class(%Exception.General).%New("Expected a response with ContentType=""text/csv"", got """_respponseContentType_ """ instead.")
-    }
-
-    Set fileName = ..TempDir_$Translate($Now(), ".,", "") // todo: usar metodo pardrao para pegar o diretorio tmp do sistema
-    Set file = ##class(%FileBinaryStream).%New()
-    $$$TOE(st, file.LinkToFile(fileName))
-    $$$TOE(st, file.CopyFrom(request.HttpResponse.Data))
-    $$$TOE(st, file.%Save())
-    $$$TOE(st, file.%Close())
-
+    Do ..ValidateCsvContentType(request)
+    Set fileName = ..SaveRequestToFile(request)
     Set retorno.fileName = fileName
 
     Return retorno
+}
+
+Method ValidateCsvContentType(pRequest As %Net.HttpRequest)
+{
+    Set request = pRequest
+    Set respponseContentType = request.HttpResponse.ContentType
+    If (respponseContentType '[ "text/csv") {
+        Throw ##class(%Exception.General).%New("Expected a response with ContentType=""text/csv"", got """_respponseContentType_ """ instead.")
+    }
+}
+
+Method SaveRequestToFile(pRequest As %Net.HttpRequest, pFileName As %String = "") As %String
+{
+    If (pFileName '= "") {
+        Set fileName = pFileName
+    } Else {
+        Set fileName = ..TempDir_$Translate($Now(), ".,", "")
+    }
+
+    Set file = ##class(%FileBinaryStream).%New()
+    $$$TOE(st, file.LinkToFile(fileName))
+    $$$TOE(st, file.CopyFrom(pRequest.HttpResponse.Data))
+    $$$TOE(st, file.%Save())
+    $$$TOE(st, file.%Close())
+
+    Return fileName
 }
 
 }
