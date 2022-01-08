@@ -8,6 +8,17 @@ Property Response As %DynamicObject;
 
 Property HttpMock As test.integration.util.HttpUtil;
 
+/// Description
+ClassMethod ConfigAndRun() As %Status
+{
+    Set sc = $$$OK
+    Set ^UnitTestRoot = "/irisrun/repo/src/iris/"
+    Set packageName = ..%PackageName()
+    Do ##class(%UnitTest.Manager).RunTest(packageName, "/loadudl/nodelete")
+    #; Do ##class(%UnitTest.Manager).RunTest(, "/nodelete")
+    Return sc
+}
+
 Method OnBeforeAllTests() As %Status
 {
     Return $$$OK

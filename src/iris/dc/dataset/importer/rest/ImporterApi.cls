@@ -11,10 +11,14 @@ Parameter BasePath = "/dataset/importer";
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-<!-- Dataset search -->
+<!-- Dataset search: Example: {"provider":"kaggle", "terms":"healthcare diabets", "credentials":"kaggle"} -->
 <Route Url="/search" Method="POST" Call="SearchDataset" Cors="true"/>
-<!-- Dataset importer -->
+<!-- Dataset importer. Example: {"provider":"socrata", "datasetId":"hdpu-mku8"} -->
 <Route Url="/import" Method="POST" Call="ImportDataset" Cors="true"/>
+<!-- Credentials creation/update. Example: {"key":"kaggle", "username":"<your-username>", "password":"<your-password>"} -->
+<Route Url="/credentials" Method="POST" Call="CreateUpdateCredentials" Cors="true"/>
+<!-- Credentials removal -->
+<Route Url="/credentials/:key" Method="DELETE" Call="DeleteCredentials" Cors="true"/>
 <!-- Server Info -->
 <Route Url="/" Method="GET" Call="GetInfo" Cors="true"/>
 <!-- Swagger specs -->
@@ -36,6 +40,22 @@ ClassMethod ImportDataset() As %Status
     Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
     Set response = service.Import(%request.Content)
     Return ..ProcessResult($$$OK, response)
+}
+
+/// Description
+ClassMethod CreateUpdateCredentials() As %Status
+{
+    Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
+    Do service.SaveCredentials(%request.Content)
+    Return $$$OK
+}
+
+/// Description
+ClassMethod DeleteCredentials(pCredentialKey As %String) As %Status
+{
+    Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
+    Do service.DeleteCredentials(pCredentialKey)
+    Return $$$OK
 }
 
 }

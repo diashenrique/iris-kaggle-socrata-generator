@@ -1,11 +1,8 @@
 /// Description
-Class dc.dataset.importer.service.socrata.SocrataApi Extends %RegisteredObject
+Class dc.dataset.importer.service.socrata.SocrataApi Extends dc.dataset.importer.service.AbstractImporterService
 {
 
-/// Description
 Parameter Provider = "socrata";
-
-Property DefaultPackage As %String [ InitialExpression = "dc.dataset.imported" ];
 
 Property DatasetParams As %DynamicObject [ Private ];
 
@@ -13,16 +10,17 @@ Property Catalog As %DynamicObject [ Private ];
 
 Property DownloadInfo As %DynamicObject [ Private ];
 
-Property HttpUtil As dc.dataset.importer.service.socrata.HttpUtil [ Private ];
-
-Method %OnNew(pHttpUtilInstance As dc.dataset.importer.service.socrata.HttpUtil = "") As %Status
+Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
 {
-    If (pHttpUtilInstance = "") {
-        Set ..HttpUtil = ##class(dc.dataset.importer.service.socrata.HttpUtil).%New()
-    } Else {
-        Set ..HttpUtil = pHttpUtilInstance
+    Set searchParams = ""
+    If (pParams.terms '= "") {
+        Set $List(searchParams, * + 1) = "q="_$ZConvert(pParams.terms, "O", "URL")
     }
-    Return $$$OK
+    Set searchParams = $LTS(searchParams, "&")
+    Set response = ..HttpUtil.HttpGetJson({
+        "Url": ("https://api.us.socrata.com/api/catalog/v1?only=datasets&"_searchParams)
+    })
+    Return response
 }
 
 Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
@@ -45,8 +43,9 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
     Set className = ..GetClassName(pDatasetParams)
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
+    Set verbose = $Case(pDatasetParams.verbose, "":0, :pDatasetParams.verbose)
     Try {
-        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, 0))
+        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, verbose))
     } Catch(e) {
         Throw ##class(%Exception.General).%New(%sqlcontext.%Message)
     }
@@ -130,19 +129,6 @@ Method GetClassFQN(pPackageName As %String, pClassName As %String) As %String
     Set fqn = pPackageName_"."_pClassName
     Set fqn = $Extract(fqn, 1, 220)
     Return fqn
-}
-
-Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
-{
-    Set searchParams = ""
-    If (pParams.terms '= "") {
-        Set $List(searchParams, * + 1) = "q="_$ZConvert(pParams.terms, "O", "URL")
-    }
-    Set searchParams = $LTS(searchParams, "&")
-    Set response = ..HttpUtil.HttpGetJson({
-        "Url": ("https://api.us.socrata.com/api/catalog/v1?only=datasets&"_searchParams)
-    })
-    Return response
 }
 
 }
