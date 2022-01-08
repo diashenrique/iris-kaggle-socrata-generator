@@ -105,7 +105,7 @@ Method HttpDownloadZIP(pHttpParams As %DynamicObject) As %DynamicObject
     #; Set url = "https://www.kaggle.com/api/v1/datasets/list/joniarroba/noshowappointments"
     Set url = "https://www.kaggle.com/api/v1/datasets/download/joniarroba/noshowappointments"
     Set username = "jjunior"
-    Set password = "b2d5fa4d1fd88cb98698005166e0bd0f"
+    Set password = ""
 
     // todo: validate content-type using a HEAD
 
