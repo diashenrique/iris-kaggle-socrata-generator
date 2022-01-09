@@ -106,8 +106,12 @@
                 <li class="nav-item">
                     <a class="d-flex align-items-center" href="kaggle.html"><i data-feather="server"></i><span class="menu-title text-truncate" data-i18n="Home">Kaggle</span></a>
                 </li>
-                <li class="active nav-item">
+                <li class="nav-item">
                     <a class="d-flex align-items-center" href="socrata.html"><i data-feather="target"></i><span class="menu-title text-truncate" data-i18n="Home">Socrata</span></a>
+                    <ul class="menu-content">
+                        <li class="active"><a class="d-flex align-items-center" href="app-invoice-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Dataset Details</span></a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -126,10 +130,9 @@
                             <h2 class="content-header-title float-start mb-0">Socrata Datasets</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item active">Socrata
-                                    </li>
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                    <li class="breadcrumb-item active">Socrata</li>
+                                    <li class="breadcrumb-item active">Dataset Details</li>
                                 </ol>
                             </div>
                         </div>
@@ -137,37 +140,114 @@
                 </div>
             </div>
             <div class="content-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-info" role="alert">
-                            <div class="alert-body">
-                                <strong>Info:</strong> Search for a dataset, explore the results, and bring it to InterSystems IRIS!
+                <section class="invoice-preview-wrapper">
+                    <div class="row invoice-preview">
+                        <!-- Invoice -->
+                        <div class="col-xl-12 col-md-12 col-12">
+                            <div class="card invoice-preview-card">
+                                <!-- Address and Contact starts -->
+                                <div class="card-body invoice-padding pt-1">
+                                    <div class="row invoice-spacing">
+                                        <div class="col-xl-6 p-1">
+                                            <h6 class="mb-2">Dataset ID <a href="#">qxh8-f4bd</a></h6>
+                                            <p class="card-text mb-25">Health Care Provider Credential Data</p>
+                                            <p class="card-text mb-25">DESCRIPTION Health Care Provider Credential Data</p>
+                                            <p class="card-text mb-25">domain</p>
+                                            <p class="card-text mb-25">license</p>
+                                            <p class="card-text mb-25">domain_tags</p>
+                                        </div>
+                                        <div class="col-xl-2 p-1 mt-xl-0 mt-2">
+                                            <h6 class="mb-2">Owner / Creator</h6>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">Owner</span></td>
+                                                        <td>Jose R Pereira JR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">Creator</span></td>
+                                                        <td>Henrique Dias</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-xl-2 p-1 mt-xl-0 mt-2">
+                                            <h6 class="mb-2">Views / Download</h6>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">View last Week</span></td>
+                                                        <td><span class="fw-bold">123</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">View last Month</span></td>
+                                                        <td>456</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">View total</span></td>
+                                                        <td>579</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">Download Total</span></td>
+                                                        <td>1234567</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-xl-2 p-1 mt-xl-0 mt-2">
+                                            <h6 class="mb-2">Dates</h6>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">Created</span></td>
+                                                        <td>2022-01-09</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1"><span class="fw-bold">Updated</span></td>
+                                                        <td>2022-01-09</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Address and Contact ends -->
+
+                                <!-- Invoice Description starts -->
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="py-1">Columns Name</th>
+                                                <th class="py-1">Columns Field Name</th>
+                                                <th class="py-1">Columns Datatype</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="py-1">Race</td>
+                                                <td class="py-1">Geography</td>
+                                                <td class="py-1">Year</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1">rage</td>
+                                                <td class="py-1">geography</td>
+                                                <td class="py-1">year</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1">Text</td>
+                                                <td class="py-1">Text</td>
+                                                <td class="py-1">Number</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Invoice Description ends -->
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- result table -->
-                <section id="basic-datatable">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <table id="socrata-dataTable" class="dt-responsive display table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Views Total</th>
-                                            <th>Download Count</th>
-                                            <th>License</th>
-                                            <th>Link</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
+                        <!-- /Invoice -->
                     </div>
                 </section>
-                <!-- result table -->
             </div>
         </div>
     </div>
@@ -212,7 +292,7 @@
     <!-- END: Theme JS-->
 
     <!-- BEGIN: Page JS-->
-    <script src="assets/js/socrata.js"></script>
+    <script src="assets/js/socrata-detail.js"></script>
     <!-- END: Page JS-->
 
     <script>
