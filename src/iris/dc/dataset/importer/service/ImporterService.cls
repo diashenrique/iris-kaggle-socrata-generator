@@ -29,7 +29,8 @@ Method Import(pParams As %DynamicObject) As %DynamicObject
 {
     Set api = ..ApiFactory(pParams)
     Set response = api.InstallDataset({
-        "datasetId": (pParams.datasetId)
+        "datasetId": (pParams.datasetId),
+        "credentials":(pParams.credentials)
     })
     Return response
 }

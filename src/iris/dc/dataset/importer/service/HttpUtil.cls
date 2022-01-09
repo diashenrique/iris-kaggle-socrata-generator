@@ -101,20 +101,15 @@ Method HttpDownloadZIP(pHttpParams As %DynamicObject) As %DynamicObject
     Set retorno = {
         "warnings": []
     }
-    
-    #; Set url = "https://www.kaggle.com/api/v1/datasets/list/joniarroba/noshowappointments"
-    Set url = "https://www.kaggle.com/api/v1/datasets/download/joniarroba/noshowappointments"
-    Set username = "jjunior"
-    Set password = ""
 
     // todo: validate content-type using a HEAD
 
     Set request = ..CreateHttpRequest({
-        "Url": (url),
-        "username": (username),
-        "password": (password)
+        "Url": (pHttpParams.Url),
+        "username": (pHttpParams.username),
+        "password": (pHttpParams.password)
     })
-    $$$TOE(st, request.Get(url))
+    $$$TOE(st, request.Get(pHttpParams.Url))
     Do ..ValidateCsvContentType(request, "application/zip")
     Set fileName = ..SaveRequestToFile(request)
 
@@ -126,7 +121,18 @@ Method HttpDownloadZIP(pHttpParams As %DynamicObject) As %DynamicObject
     If (fileList.%Size() > 1) {
         Do retorno.warnings.%Push("There was more than 1 file in the zip file. Using the first one.")
     }
-    Set retorno.fileName = zipTempDir_"/"_fileList.%Get(0)
+    Set sourceFile = zipTempDir_"/"_fileList.%Get(0)
+    Set destFile = ..TempDir_"/"_fileList.%Get(0)
+    If ('##class(%File).CopyFile(sourceFile, destFile, 1, .status)) {
+        Throw ##class(%Exception.General).%New("Can't move unzipped file.")
+    }
+    If ('##class(%File).RemoveDirectoryTree(zipTempDir)) {
+        Do retorno.warnings.%Push("Can't remove temp directory for unzipping.")
+    }
+    If ('##class(%File).Delete(fileName)) {
+        Do retorno.warnings.%Push("Can't remove the zipped dataset file.")
+    }
+    Set retorno.fileName = destFile
 
     Return retorno
 }
