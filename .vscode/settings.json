@@ -14,7 +14,8 @@
       },
       "active": true,
       "links": {
-        "Importer API": "http://localhost:${port}/swagger-ui/index.html?url=/dataset/importer/_spec"
+        "Importer API": "http://localhost:${port}/swagger-ui/index.html?url=/dataset/importer/_spec",
+        "UI": "http://localhost:${port}/ds-importer/socrata.html"
       }
     },
     "sqltools.connections": [

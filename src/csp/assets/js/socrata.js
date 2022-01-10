@@ -80,7 +80,17 @@ $(function () {
     }
 
     $("#download-btn").on('click', function () {
-      alert($("#id-dataset").html());
+      // alert($("#id-dataset").html());
+      const datasetId = $("#id-dataset").html()
+      var settings = {
+        "url": "/dataset/importer/import",
+        "method": "POST",
+        "timeout": 0,
+        "data": JSON.stringify({"provider":"socrata","datasetId":datasetId})
+      };
+      $.ajax(settings).done(function (response) {
+        console.log(response)
+      });
     });
 
   });
