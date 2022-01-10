@@ -109,15 +109,10 @@ XData Catalog [ MimeType = application/json ]
 }
 }
 
+/// No data was saved due this dataset has no license definied
 XData CsvFile [ MimeType = text/plain ]
 {
 hcs,people_served,total_tests,tests_7days,daily_avg_test,daily_avg_rate
-County of Santa Clara Health System,300000,911430,5239,748,249
-El Camino Health,140000,84898,1551,222,159
-HCA Healthcare,264200,34850,696,99,37
-Kaiser Permanente,600000,454792,7160,1023,171
-PAMF/Sutter Health,426000,94966,1291,184,43
-Stanford,329400,384915,10091,1442,438
 }
 
 }

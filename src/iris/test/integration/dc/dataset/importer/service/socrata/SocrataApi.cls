@@ -79,14 +79,17 @@ Method TestInstallDataset02()
     Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset02||CsvFile"
     )
-    Set ..Response = ..Api.InstallDataset({
-        "datasetId": "hdpu-mku8",
-        "keepFile": false
-    })
+    Set ex = ""
+    Try {
+        Set ..Response = ..Api.InstallDataset({
+            "datasetId": "hdpu-mku8",
+            "keepFile": false
+        })
+    } Catch(e) {
+        Set ex = e
+    }
     #; zw ..Response
-    Do $$$AssertEquals(..Response.className, "dc.dataset.imported.Ds20142015ParentSchoolSurveyData")
-    Do $$$AssertEquals(..Response.columns, "DBN VARCHAR(250),SchoolName VARCHAR(250),""TotalParentResponseRate"" INTEGER,TotalTeacherResponseRate INTEGER,TotalStudentResponseRatee VARCHAR(250)")
-    Do $$$AssertEquals(..Response.records, 2098)
+    Do $$$AssertEquals(ex.Name, "The dataset must specify a license.")
 }
 
 Method TestInstallDataset03()
@@ -136,14 +139,16 @@ Method TestInstallDataset05()
     Set ..HttpMock.HttpDownloadCsvFileResponseMock = ..LoadXData(
         "test.integration.util.Dataset05||CsvFile"
     )
-    Set ..Response = ..Api.InstallDataset({
-        "datasetId": "vzxr-ymut",
-        "keepFile": false
-    })
+    Try {
+        Set ..Response = ..Api.InstallDataset({
+            "datasetId": "vzxr-ymut",
+            "keepFile": false
+        })
+    } Catch(e) {
+        Set ex = e
+    }
     #; zw ..Response
-    Do $$$AssertEquals(..Response.className, "dc.dataset.imported.DsCovid19TestingByHealthcareSystem")
-    Do $$$AssertEquals(..Response.columns, "hcs VARCHAR(250),people_served INTEGER,total_tests INTEGER,tests_7days INTEGER,daily_avg_test INTEGER,daily_avg_rate INTEGER")
-    Do $$$AssertEquals(..Response.records, 6)
+    Do $$$AssertEquals(ex.Name, "The dataset must specify a license.")
 }
 
 }

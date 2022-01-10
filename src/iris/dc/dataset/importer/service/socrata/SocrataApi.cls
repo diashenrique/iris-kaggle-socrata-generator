@@ -4,9 +4,9 @@ Class dc.dataset.importer.service.socrata.SocrataApi Extends dc.dataset.importer
 
 Parameter Provider = "socrata";
 
-Property DatasetParams As %DynamicObject [ Private ];
+Property DatasetParams As %DynamicObject;
 
-Property Catalog As %DynamicObject [ Private ];
+Property Catalog As %DynamicObject;
 
 Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
 {
@@ -21,16 +21,57 @@ Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
     Return response
 }
 
-Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
+Method GetDatasetId() As %String
 {
-    Set datasetId = pDatasetParams.datasetId
+    Set datasetId = ..DatasetParams.datasetId
     If (datasetId = "") {
         Throw ##class(%Exception.General).%New("In order to install a Socrata dataset you must provide an ID.")
     }
+    Return datasetId
+}
 
-    Set ..Catalog = ..HttpUtil.HttpGetJson({
-        "Url": ("https://api.us.socrata.com/api/catalog/v1?ids="_datasetId)
-    })
+Method GetCatalog() As %DynamicObject
+{
+    If ('$IsObject(..Catalog)) || (..Catalog.%ToJSON() = "{}") {
+        Set datasetId = ..GetDatasetId()
+        Set ..Catalog = ..HttpUtil.HttpGetJson({
+            "Url": ("https://api.us.socrata.com/api/catalog/v1?ids="_datasetId)
+        })
+    }
+    Return ..Catalog
+}
+
+Method HasResult() As %Boolean
+{
+    Do ..GetCatalog()
+    Return (..Catalog.error = "") && ((..Catalog.results '= "") && (..Catalog.results.%Size() > 0))
+}
+
+Method GetDatasetLicense() As %String
+{
+    If (..GetCatalog().results) {
+        Return ..GetCatalog().results.%Get(0).metadata.license
+    }
+    Return ""
+}
+
+Method ProcessInstallation() As %DynamicObject
+{
+    Set retorno = {
+        "warnings": []
+    }
+
+    #; Set datasetId = ..DatasetParams.datasetId
+    #; If (datasetId = "") {
+    #;     Throw ##class(%Exception.General).%New("In order to install a Socrata dataset you must provide an ID.")
+    #; }
+    Set datasetId = ..GetDatasetId()
+
+    Do ..GetCatalog()
+    
+    If (..Catalog.results.%Size() > 1) {
+        Do retorno.warnings.%Push("There were more than 1 results. Using just the first one.")
+    }
     
     Set domain = ..Catalog.results.%Get(0).metadata.domain
     Set donwloadUrl = "https://"_domain_"/api/views/"_datasetId_"/rows.csv?accessType=DOWNLOAD"
@@ -40,33 +81,34 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
 
     Do ..FixCsvHeader()
 
-    Set packageName = ..GetPackageName(pDatasetParams)
-    Set className = ..GetClassName(pDatasetParams)
+    Set packageName = ..GetPackageName()
+    Set className = ..GetClassName()
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
-    Set verbose = $Case(pDatasetParams.verbose, "":0, :pDatasetParams.verbose)
+    Set verbose = $Case(..DatasetParams.verbose, "":0, :..DatasetParams.verbose)
     Try {
         $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, verbose))
     } Catch(e) {
         Throw ##class(%Exception.General).%New(%sqlcontext.%Message)
     }
 
-    If ('pDatasetParams.keepFile) {
+    If ('..DatasetParams.keepFile) {
         $$$TOE(st, ##class(%File).Delete(fileName))
     }
 
-    Return {
-        "className": (fqn),
-        "columns": (rowType),
-        "records": (recordsCount)
-    }
+    Set retorno.className = fqn
+    Set retorno.columns = rowType
+    Set retorno.records = recordsCount
+
+    Return retorno
 }
 
-Method GetClassName(pDatasetParams As %DynamicObject) As %String
+Method GetClassName() As %String
 {
-    Set className = pDatasetParams.className
+    Do ..GetCatalog()
+    Set className = ..DatasetParams.className
     If (className = "") {
-        Set className = pDatasetParams.datasetId
+        Set className = ..DatasetParams.datasetId
         Set className = ..Catalog.results.%Get(0).resource.name
         Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
         Set className = $TR(className, " -_", "") // remove non-valid chars

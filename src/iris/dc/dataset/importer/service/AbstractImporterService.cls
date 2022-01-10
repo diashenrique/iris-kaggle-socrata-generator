@@ -8,7 +8,9 @@ Property DefaultPackage As %String [ InitialExpression = "dc.dataset.imported" ]
 
 Property HttpUtil As dc.dataset.importer.service.HttpUtil;
 
-Property DownloadInfo As %DynamicObject [ Private ];
+Property DownloadInfo As %DynamicObject;
+
+Property DatasetParams As %DynamicObject;
 
 Method %OnNew(pHttpUtilInstance As dc.dataset.importer.service.HttpUtil = "") As %Status
 {
@@ -24,8 +26,34 @@ Method SearchDataset(pParams As %DynamicObject) As %DynamicObject [ Abstract ]
 {
 }
 
-Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject [ Abstract ]
+Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
 {
+    Set ..DatasetParams = pDatasetParams
+    If ('..HasResult()) {
+        Throw ##class(%Exception.General).%New("Dataset not found.")
+    }
+    Do ..ValidateLicense()
+    Return ..ProcessInstallation()
+}
+
+Method HasResult() As %Boolean [ Abstract ]
+{
+}
+
+Method ProcessInstallation() As %DynamicObject [ Abstract ]
+{
+}
+
+Method GetDatasetLicense() As %String [ Abstract ]
+{
+}
+
+Method ValidateLicense()
+{
+    Set license = ..GetDatasetLicense()
+    If (license = "") {
+        Throw ##class(%Exception.General).%New("The dataset must specify a license.")
+    }
 }
 
 Method FixCsvHeader() [ Private ]
@@ -69,16 +97,16 @@ Method FixColName(pColName As %String) As %String [ Private ]
     Return pColName
 }
 
-Method GetPackageName(pDatasetParams As %DynamicObject) As %String
+Method GetPackageName() As %String
 {
-    Set packageName = pDatasetParams.packageName
+    Set packageName = ..DatasetParams.packageName
     If (packageName = "") {
         Set packageName = ..DefaultPackage
     }
     Return packageName
 }
 
-Method GetClassName(pDatasetParams As %DynamicObject) As %String [ Abstract ]
+Method GetClassName() As %String [ Abstract ]
 {
 }
 

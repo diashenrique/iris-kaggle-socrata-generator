@@ -74,6 +74,7 @@ Method InstallDatasetTest1()
 
 Method InstallDatasetTest2()
 {
+    // no license
     ZW ..Api.InstallDataset({
         "datasetId": "hdpu-mku8"
     })
@@ -95,6 +96,7 @@ Method InstallDatasetTest4()
 
 Method InstallDatasetTest5()
 {
+    // no license
     ZW ..Api.InstallDataset({
         "datasetId": "vzxr-ymut"
     })
@@ -102,6 +104,7 @@ Method InstallDatasetTest5()
 
 Method InstallDatasetTest6()
 {
+    // no license
     // todo: criar teste de instegração esperando um erro de content-type (retorna html ao invés de csv)
     ZW ..Api.InstallDataset({
         "datasetId": "tcej-pv7k"

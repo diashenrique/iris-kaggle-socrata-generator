@@ -11,9 +11,9 @@ Parameter BasePath = "/dataset/importer";
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-<!-- Dataset search: Examples: (1) {"provider":"kaggle", "terms":"healthcare diabets", "credentials":"kaggle"}, (2) {"provider":"kaggle", "terms":"healthcare diabets", "credentials":"kaggle"} -->
+<!-- Dataset search: Examples: (1) {"provider":"socrata", "terms":"healthcare diabets"}, (2) {"provider":"kaggle", "terms":"healthcare diabets", "credentials":"kaggle"} -->
 <Route Url="/search" Method="POST" Call="SearchDataset" Cors="true"/>
-<!-- Dataset importer. Examples: (1) {"provider":"socrata", "datasetId":"hdpu-mku8"}, (2) {"provider":"kaggle", "datasetId":"joniarroba/noshowappointments", "credentials":"kaggle"} -->
+<!-- Dataset importer. Examples: (1) {"provider":"socrata", "datasetId":"n9tp-i3k3"}, (2) {"provider":"kaggle", "datasetId":"joniarroba/noshowappointments", "credentials":"kaggle"} -->
 <Route Url="/import" Method="POST" Call="ImportDataset" Cors="true"/>
 <!-- Credentials creation/update. Example: {"key":"kaggle", "username":"<your-username>", "password":"<your-password>"} -->
 <Route Url="/credentials" Method="POST" Call="CreateUpdateCredentials" Cors="true"/>

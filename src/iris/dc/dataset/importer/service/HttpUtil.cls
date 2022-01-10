@@ -119,7 +119,7 @@ Method HttpDownloadZIP(pHttpParams As %DynamicObject) As %DynamicObject
     }
     Set fileList = ..UnZip(fileName, zipTempDir)
     If (fileList.%Size() > 1) {
-        Do retorno.warnings.%Push("There was more than 1 file in the zip file. Using the first one.")
+        Do retorno.warnings.%Push("There were more than 1 file in the zip file. Using the first one.")
     }
     Set sourceFile = zipTempDir_"/"_fileList.%Get(0)
     Set destFile = ..TempDir_"/"_fileList.%Get(0)

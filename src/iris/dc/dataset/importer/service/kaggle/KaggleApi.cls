@@ -21,22 +21,55 @@ Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
     Return response
 }
 
-Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
+Method GetDatasetId() As %String
+{
+    Set datasetId = ..DatasetParams.datasetId
+    If (datasetId = "") {
+        Throw ##class(%Exception.General).%New("In order to install a Kaggle dataset you must provide a ref parameter.")
+    }
+    Return datasetId
+}
+
+Method GetMetadata() As %DynamicObject
+{
+    If ('$IsObject(..Metadata)) || (..Metadata.%ToJSON() = "{}") {
+        Set datasetId = ..GetDatasetId()
+        Set paramsMetadata = {
+            "Url": ("https://www.kaggle.com/api/v1/datasets/list/"_datasetId)
+        }
+        Set paramsMetadata = ..InsertKaggleCredentials(..DatasetParams, paramsMetadata)
+        Set ..Metadata = ..HttpUtil.HttpGetJson(paramsMetadata)
+    }
+    Return ..Metadata
+}
+
+Method HasResult() As %Boolean
+{
+    Do ..GetMetadata()
+    Return ..Metadata.datasetFiles '= ""
+}
+
+Method GetDatasetLicense() As %String
+{
+    Do ..GetMetadata()
+    Set ref = ..Metadata.datasetFiles.%Get(0).datasetRef
+    Set paramsMetadata = {
+        "Url": ("https://www.kaggle.com/api/v1/datasets/view/"_ref)
+    }
+    Set paramsMetadata = ..InsertKaggleCredentials(..DatasetParams, paramsMetadata)
+    Set metadata = ..HttpUtil.HttpGetJson(paramsMetadata)
+    Return metadata.licenseName
+}
+
+Method ProcessInstallation() As %DynamicObject
 {
     Set retorno = {
         "warnings": []
     }
 
-    Set datasetId = pDatasetParams.datasetId
-    If (datasetId = "") {
-        Throw ##class(%Exception.General).%New("In order to install a Kaggle dataset you must provide a ref parameter.")
-    }
-    
-    Set paramsMetadata = {
-        "Url": ("https://www.kaggle.com/api/v1/datasets/list/"_datasetId)
-    }
-    Set paramsMetadata = ..InsertKaggleCredentials(pDatasetParams, paramsMetadata)
-    Set ..Metadata = ..HttpUtil.HttpGetJson(paramsMetadata)
+    Set datasetId = ..GetDatasetId()
+
+    Do ..GetMetadata()
     If (..Metadata.datasetFiles.%Size() > 1) {
         Do retorno.warnings.%Push("The dataset has more than 1 files. Using just the first one.")
     }
@@ -46,23 +79,23 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
     Set paramsDownload = {
         "Url": (downloadUrl)
     }
-    Set paramsDownload = ..InsertKaggleCredentials(pDatasetParams, paramsDownload)
+    Set paramsDownload = ..InsertKaggleCredentials(..DatasetParams, paramsDownload)
     Set ..DownloadInfo = ..HttpUtil.HttpDownloadZIP(paramsDownload)
 
     Do ..FixCsvHeader()
 
-    Set packageName = ..GetPackageName(pDatasetParams)
-    Set className = ..GetClassName(pDatasetParams)
+    Set packageName = ..GetPackageName()
+    Set className = ..GetClassName()
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
-    Set verbose = $Case(pDatasetParams.verbose, "":0, :pDatasetParams.verbose)
+    Set verbose = $Case(..DatasetParams.verbose, "":0, :..DatasetParams.verbose)
     Try {
         $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, verbose))
     } Catch(e) {
         Throw ##class(%Exception.General).%New(%sqlcontext.%Message)
     }
 
-    If ('pDatasetParams.keepFile) {
+    If ('..DatasetParams.keepFile) {
         $$$TOE(st, ##class(%File).Delete(fileName))
     }
 
@@ -91,9 +124,10 @@ Method InsertKaggleCredentials(pParams As %DynamicObject, pDestParams As %Dynami
     Return pDestParams
 }
 
-Method GetClassName(pDatasetParams As %DynamicObject) As %String
+Method GetClassName() As %String
 {
-    Set className = pDatasetParams.className
+    Do ..GetMetadata()
+    Set className = ..DatasetParams.className
     If (className = "") {
         Set datasetRef = $LFS(..Metadata.datasetFiles.%Get(0).datasetRef, "/")
         Set className = $List(datasetRef, *)
