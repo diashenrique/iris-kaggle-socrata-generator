@@ -14,8 +14,9 @@
       },
       "active": true,
       "links": {
+        "Portal": "http://localhost:${port}/csp/sys/%25CSP.Portal.Home.zen",
         "Importer API": "http://localhost:${port}/swagger-ui/index.html?url=/dataset/importer/_spec",
-        "UI": "http://localhost:${port}/ds-importer/socrata.html"
+        "Importer UI": "http://localhost:${port}/ds-importer/socrata.html"
       }
     },
     "sqltools.connections": [

@@ -7,14 +7,11 @@
       <Packaging>module</Packaging>
       <SourcesRoot>src/iris</SourcesRoot>
       <Resource Name="dc.dataset.importer.PKG"/>
+      <Resource Name="community.PKG"/>
       <Dependencies>
         <ModuleReference>
           <Name>swagger-ui</Name>
           <Version>1.*.*</Version>
-        </ModuleReference>
-        <ModuleReference>
-          <Name>csvgen</Name>
-          <Version>1.2.*</Version>
         </ModuleReference>
       </Dependencies>
       <CSPApplication 
