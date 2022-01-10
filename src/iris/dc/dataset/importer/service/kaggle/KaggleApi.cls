@@ -132,9 +132,10 @@ Method GetClassName() As %String
         Set datasetRef = $LFS(..Metadata.datasetFiles.%Get(0).datasetRef, "/")
         Set className = $List(datasetRef, *)
         Set className = $Replace(className, ".csv", "")
-        Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
-        Set className = $TR(className, " -_", "") // remove non-valid chars
-        Set className = $Extract(className, 1, 60) // classes name must have length up to 60
+        #; Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
+        #; Set className = $TR(className, " -_", "") // remove non-valid chars
+        #; Set className = $Extract(className, 1, 60) // classes name must have length up to 60
+        Set className = ..FixClassName(className)
     }
     Return className
 }

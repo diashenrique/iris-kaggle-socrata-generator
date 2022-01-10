@@ -33,7 +33,8 @@ Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
         Throw ##class(%Exception.General).%New("Dataset not found.")
     }
     Do ..ValidateLicense()
-    Return ..ProcessInstallation()
+    Set response = ..ProcessInstallation()
+    Return response
 }
 
 Method HasResult() As %Boolean [ Abstract ]
@@ -115,6 +116,18 @@ Method GetClassFQN(pPackageName As %String, pClassName As %String) As %String
     Set fqn = pPackageName_"."_pClassName
     Set fqn = $Extract(fqn, 1, 220)
     Return fqn
+}
+
+Method FixClassName(pClassName As %String) As %String
+{
+    Set className = pClassName
+        #; Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
+        #; Set className = $TR(className, " -_", "") // remove non-valid chars
+        #; Set className = $Extract(className, 1, 60) // classes name must have length up to 60
+    Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
+    Set className = $Translate(className, " !@#$%¨&*()-_=+[]{}~^,.;:/?\|'""ªº", "")
+    Set className = $Extract(className, 1, 60) // classes name must have length up to 60
+    Return className
 }
 
 }

@@ -89,7 +89,10 @@ $(function () {
         "headers": {
           "Content-Type": "application/json"
         },
-        "data": JSON.stringify({"provider":"socrata","datasetId":datasetId})
+        "data": JSON.stringify({"provider":"socrata","datasetId":datasetId}),
+        "error": function(error){
+          alert(JSON.stringify(error));
+        }
       };
       $.ajax(settings).done(function (response) {
         alert(JSON.stringify(response))
