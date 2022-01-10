@@ -86,10 +86,13 @@ $(function () {
         "url": "/dataset/importer/import",
         "method": "POST",
         "timeout": 0,
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "data": JSON.stringify({"provider":"socrata","datasetId":datasetId})
       };
       $.ajax(settings).done(function (response) {
-        console.log(response)
+        alert(JSON.stringify(response))
       });
     });
 
