@@ -21,13 +21,7 @@ $(function () {
       "processing": true,
       "data": data,
       "columns": [{
-        "data": "resource.id",
-        "render": function (data, type, row, meta) {
-          if (type === 'display') {
-            data = '<a href="' + data + '" target="_blank"><span class="font-weight-bold">' + data + '</span></a>';
-          }
-          return data;
-        }
+        "data": "resource.id"
       }, {
         "data": "resource.name"
       }, {
@@ -36,7 +30,15 @@ $(function () {
         "data": "resource.download_count"
       }, {
         "data": "metadata.license",
-        "defaultContent": ""
+        "defaultContent": "",
+        "render": function (data, type, row, meta) {
+          console.log("data", data);
+          console.log("type", type);
+          console.log("row", row);
+          console.log("meta", meta);
+          
+          return data;
+        }
       }, {
         "data": "permalink",
         "render": function (data, type, row, meta) {
@@ -75,7 +77,7 @@ $(function () {
       $("#updatedate-dataset").text(dataDetails.resource.updatedAt);
 
       dataDetails.resource.columns_name.forEach(function (item, index) {
-        $("#detail-dataTable > tbody").append("<tr><td>"+ dataDetails.resource.columns_name[index] +"</td><td>" + dataDetails.resource.columns_field_name[index] + "</td><td>" + dataDetails.resource.columns_datatype[index] + "</td></tr>"); 
+        $("#detail-dataTable > tbody").append("<tr><td>" + dataDetails.resource.columns_name[index] + "</td><td>" + dataDetails.resource.columns_field_name[index] + "</td><td>" + dataDetails.resource.columns_datatype[index] + "</td></tr>");
       });
     }
 
@@ -89,8 +91,11 @@ $(function () {
         "headers": {
           "Content-Type": "application/json"
         },
-        "data": JSON.stringify({"provider":"socrata","datasetId":datasetId}),
-        "error": function(error){
+        "data": JSON.stringify({
+          "provider": "socrata",
+          "datasetId": datasetId
+        }),
+        "error": function (error) {
           alert(JSON.stringify(error));
         }
       };
