@@ -30,15 +30,7 @@ $(function () {
         "data": "resource.download_count"
       }, {
         "data": "metadata.license",
-        "defaultContent": "",
-        "render": function (data, type, row, meta) {
-          console.log("data", data);
-          console.log("type", type);
-          console.log("row", row);
-          console.log("meta", meta);
-          
-          return data;
-        }
+        "defaultContent": ""
       }, {
         "data": "permalink",
         "render": function (data, type, row, meta) {
@@ -52,6 +44,7 @@ $(function () {
     $('div.head-label').html('<h6 class="mb-0">Kick start your next project 🚀</h6>');
 
     $('#socrata-dataTable tbody').on('click', 'tr', function () {
+      clearDetails();
       details(table.row(this).index());
 
       $("#xlarge").modal('show');
@@ -59,6 +52,7 @@ $(function () {
 
 
     function details(pArrayIndex) {
+      let license = "";
       var dataDetails = data[pArrayIndex];
 
       $("#id-dataset").text(dataDetails.resource.id);
@@ -82,27 +76,75 @@ $(function () {
     }
 
     $("#download-btn").on('click', function () {
-      // alert($("#id-dataset").html());
-      const datasetId = $("#id-dataset").html()
-      var settings = {
-        "url": "/dataset/importer/import",
-        "method": "POST",
-        "timeout": 0,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-          "provider": "socrata",
-          "datasetId": datasetId
-        }),
-        "error": function (error) {
-          alert(JSON.stringify(error));
-        }
-      };
-      $.ajax(settings).done(function (response) {
-        alert(JSON.stringify(response))
-      });
+      
+      if ($("#license-dataset").html().length === 0) {
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'This dataset is not licensed.',
+          //footer: '<a href=' + a + '>Please contact the owner to get a license.</a>',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
+
+
+      } else {
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Downloading...',
+          text: 'Your dataset in on the way!',
+          //footer: '<a href=' + a + '>Please contact the owner to get a license.</a>',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
+
+        const datasetId = $("#id-dataset").html()
+        var settings = {
+          "url": "/dataset/importer/import",
+          "method": "POST",
+          "timeout": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "data": JSON.stringify({
+            "provider": "socrata",
+            "datasetId": datasetId
+          }),
+          "error": function (error) {
+            alert(JSON.stringify(error));
+          }
+        };
+        $.ajax(settings).done(function (response) {
+          alert(JSON.stringify(response))
+        });
+      }
     });
+
+    function clearDetails() {
+      $("#id-dataset").text("");
+      $("#name-dataset").text("");
+      $("#description-dataset").text("");
+      $("#domain-dataset").text("");
+      $("#license-dataset").text("");
+      $("#domain-tag-dataset").text("");
+      $("#owner-dataset").text("");
+      $("#creator-dataset").text("");
+      $("#lastweek-dataset").text("");
+      $("#lastmonth-dataset").text("");
+      $("#viewtotal-dataset").text("");
+      $("#download-dataset").text("");
+      $("#createdate-dataset").text("");
+      $("#updatedate-dataset").text("");
+      $("#detail-dataTable > tbody").empty();
+    }
+
+
 
   });
 });
