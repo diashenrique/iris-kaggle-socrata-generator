@@ -94,34 +94,39 @@ $(function () {
       } else {
 
         Swal.fire({
-          icon: 'success',
           title: 'Downloading...',
           text: 'Your dataset in on the way!',
-          //footer: '<a href=' + a + '>Please contact the owner to get a license.</a>',
-          customClass: {
-            confirmButton: 'btn btn-primary'
-          },
-          buttonsStyling: false
-        });
-
-        const datasetId = $("#id-dataset").html()
-        var settings = {
-          "url": "/dataset/importer/import",
-          "method": "POST",
-          "timeout": 0,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "data": JSON.stringify({
-            "provider": "socrata",
-            "datasetId": datasetId
-          }),
-          "error": function (error) {
-            alert(JSON.stringify(error));
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+            const datasetId = $("#id-dataset").html()
+            var settings = {
+              "url": "/dataset/importer/import",
+              "method": "POST",
+              "timeout": 0,
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "data": JSON.stringify({
+                "provider": "socrata",
+                "datasetId": datasetId
+              }),
+              "error": function (error) {
+                Swal.fire(
+                  "Internal Error",
+                  JSON.stringify(error),
+                  "error"
+                );
+              }
+            };
+            return $.ajax(settings).done(function (response) {
+              Swal.fire(
+                "Success!",
+                JSON.stringify(response),
+                "success"
+              );
+            });
           }
-        };
-        $.ajax(settings).done(function (response) {
-          alert(JSON.stringify(response))
         });
       }
     });
