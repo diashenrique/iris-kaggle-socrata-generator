@@ -114,7 +114,7 @@ $(function () {
               "error": function (error) {
                 Swal.fire(
                   "Internal Error",
-                  JSON.stringify(error),
+                  getErrorMsg(error),
                   "error"
                 );
               }
@@ -122,7 +122,7 @@ $(function () {
             return $.ajax(settings).done(function (response) {
               Swal.fire(
                 "Success!",
-                JSON.stringify(response),
+                getSuccessMsg(response),
                 "success"
               );
             });
@@ -130,6 +130,26 @@ $(function () {
         });
       }
     });
+
+    function getErrorMsg(error) {
+      if (error && typeof(error) === "object") {
+        if (error.status && error.status.toString() === "401") {
+          return error.statusText;
+        } else if (error.responseJSON && error.responseJSON.summary) {
+          return error.responseJSON.summary;
+        }
+      }
+      return "";
+    }
+
+    function getSuccessMsg(response) {
+      if (response) {
+        if (response.className) {
+          return `There was imported <b>${response.records} records</b> on class <b>${response.className}</b>.`;
+        }
+      }
+      return "";
+    }
 
     function clearDetails() {
       $("#id-dataset").text("");
