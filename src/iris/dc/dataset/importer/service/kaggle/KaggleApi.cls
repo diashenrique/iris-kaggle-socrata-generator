@@ -75,6 +75,9 @@ Method ProcessInstallation() As %DynamicObject
     }
     Set fileId = $ZConvert(..Metadata.datasetFiles.%Get(0).ref, "O", "URL")
     
+    Do ..SetProgressInfo(..ProgressInfoKey, {
+        "status":"downloading"
+    })
     Set downloadUrl = "https://www.kaggle.com/api/v1/datasets/download/"_datasetId_"/"_fileId
     Set paramsDownload = {
         "Url": (downloadUrl)
@@ -89,7 +92,12 @@ Method ProcessInstallation() As %DynamicObject
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
     Set verbose = $Case(..DatasetParams.verbose, "":0, :..DatasetParams.verbose)
+
+    Do ..SetProgressInfo(..ProgressInfoKey, {
+        "status":"installing"
+    })
     Set ex = ""
+    Set recordsCount = 0
     Try {
         $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, 0, .recordsCount, verbose))
     } Catch(e) {

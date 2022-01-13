@@ -66,9 +66,12 @@ Method ProcessInstallation() As %DynamicObject
     Do ..GetCatalog()
     
     If (..Catalog.results.%Size() > 1) {
-        Do retorno.warnings.%Push("There were more than 1 results. Using just the first one.")
+        Do retorno.warnings.%Push("There is more than 1 results. Using just the first one.")
     }
     
+    Do ..SetProgressInfo(..ProgressInfoKey, {
+        "status":"downloading"
+    })
     Set domain = ..Catalog.results.%Get(0).metadata.domain
     Set donwloadUrl = "https://"_domain_"/api/views/"_datasetId_"/rows.csv?accessType=DOWNLOAD"
     Set ..DownloadInfo = ..HttpUtil.HttpDownloadCsvFile({
@@ -82,7 +85,12 @@ Method ProcessInstallation() As %DynamicObject
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
     Set verbose = $Case(..DatasetParams.verbose, "":0, :..DatasetParams.verbose)
+
+    Do ..SetProgressInfo(..ProgressInfoKey, {
+        "status":"installing"
+    })
     Set ex = ""
+    Set recordsCount = 0
     Try {
         $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, 0, .recordsCount, verbose))
     } Catch(e) {

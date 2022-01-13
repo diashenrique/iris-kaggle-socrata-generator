@@ -3,7 +3,7 @@ Class dc.dataset.importer.service.ImporterService Extends %RegisteredObject
 {
 
 /// Description
-Method ApiFactory(pParams As %DynamicObject) As %RegisteredObject
+ClassMethod ApiFactory(pParams As %DynamicObject) As %RegisteredObject
 {
     Set api = ""
     If (pParams.provider = ##class(dc.dataset.importer.service.socrata.SocrataApi).#Provider) {
@@ -28,11 +28,38 @@ Method Search(pParams As %DynamicObject) As %DynamicObject
 Method Import(pParams As %DynamicObject) As %DynamicObject
 {
     Set api = ..ApiFactory(pParams)
-    Set response = api.InstallDataset({
-        "datasetId": (pParams.datasetId),
-        "credentials":(pParams.credentials)
-    })
+    Job ..RunAsyncImport(
+        api.ProgressInfoKey, pParams.%ToJSON()
+    )
+    Set response = {
+        "ProgressInfoKey":(api.ProgressInfoKey)
+    }
     Return response
+}
+
+/// Description
+ClassMethod RunAsyncImport(pProgressInfoKey As %String, pParams As %String)
+{
+    Try {
+        Set pParams = {}.%FromJSON(pParams)
+        Set sc = $$$OK
+        Set params = {
+            "datasetId": (pParams.datasetId),
+            "credentials":(pParams.credentials)
+        }
+        Set api = ..ApiFactory(pParams)
+        Set api.ProgressInfoKey = pProgressInfoKey
+        Do api.InstallDataset(params)
+    } Catch(e) {
+        Do api.SetProgressInfo(pProgressInfoKey, e.DisplayString())
+    }
+}
+
+Method GetProgressInfo(pProgressInfoKey As %String) As %DynamicObject
+{
+    Return ##class(dc.dataset.importer.service.AbstractImporterService).GetProgressInfo(
+        pProgressInfoKey
+    )
 }
 
 Method SaveCredentials(pParams As %DynamicObject)

@@ -12,6 +12,8 @@ Property DownloadInfo As %DynamicObject;
 
 Property DatasetParams As %DynamicObject;
 
+Property ProgressInfoKey As %String;
+
 Method %OnNew(pHttpUtilInstance As dc.dataset.importer.service.HttpUtil = "") As %Status
 {
     If (pHttpUtilInstance = "") {
@@ -19,6 +21,7 @@ Method %OnNew(pHttpUtilInstance As dc.dataset.importer.service.HttpUtil = "") As
     } Else {
         Set ..HttpUtil = pHttpUtilInstance
     }
+    Set ..ProgressInfoKey = $System.Util.CreateGUID()
     Return $$$OK
 }
 
@@ -26,15 +29,27 @@ Method SearchDataset(pParams As %DynamicObject) As %DynamicObject [ Abstract ]
 {
 }
 
-Method InstallDataset(pDatasetParams As %DynamicObject) As %DynamicObject
+Method InstallDataset(pDatasetParams As %DynamicObject)
 {
-    Set ..DatasetParams = pDatasetParams
-    If ('..HasResult()) {
-        Throw ##class(%Exception.General).%New("Dataset not found.")
+    Do ..SetProgressInfo(..ProgressInfoKey, {
+        "status":"started", "data":null
+    })
+    Try {
+        Set ..DatasetParams = pDatasetParams
+        If ('..HasResult()) {
+            Throw ##class(%Exception.General).%New("Dataset not found.")
+        }
+        Do ..ValidateLicense()
+        Set response = ..ProcessInstallation()
+        Do ..SetProgressInfo(..ProgressInfoKey, {
+            "status":"success", "data":(response)
+        })
+        Job ..ClearProgressInfo(..ProgressInfoKey, 20)
+    } Catch(e) {
+        Do ..SetProgressInfo(..ProgressInfoKey, {
+            "status":"error", "data": (e.DisplayString())
+        })
     }
-    Do ..ValidateLicense()
-    Set response = ..ProcessInstallation()
-    Return response
 }
 
 Method HasResult() As %Boolean [ Abstract ]
@@ -101,7 +116,9 @@ Method FixColName(pColName As %String) As %String [ Private ]
     Set lst = $LFS(pColName, ",")
     Set len = $LL(lst)
     For i = 1:1:len {
-        Set $List(lst, i) = $LG(lst, i)_i
+        Set idx = $TR($Justify(i, 2), " ", "0")
+        Set colName = $Extract($LG(lst, i), 1, * - 2)
+        Set $List(lst, i) = colName_idx
     }
     Set pColName = $LTS(lst, ",")
 
@@ -131,13 +148,31 @@ Method GetClassFQN(pPackageName As %String, pClassName As %String) As %String
 Method FixClassName(pClassName As %String) As %String
 {
     Set className = pClassName
-        #; Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
-        #; Set className = $TR(className, " -_", "") // remove non-valid chars
-        #; Set className = $Extract(className, 1, 60) // classes name must have length up to 60
     Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
     Set className = $Translate(className, " !@#$%¨&*()-_=+[]{}~^,.;:/?\|'""ªº", "")
     Set className = $Extract(className, 1, 60) // classes name must have length up to 60
     Return className
+}
+
+ClassMethod SetProgressInfo(pKey As %String, pMsg As %DynamicObject)
+{
+    Set ^ProgressInfo(pKey, $I(^ProgressInfo(pKey))) = pMsg.%ToJSON()
+}
+
+ClassMethod GetProgressInfo(pKey As %String, pSubKey As %Integer = "") As %DynamicObject
+{
+    If (pSubKey = "") {
+        Set pSubKey = ^ProgressInfo(pKey)
+    }
+    Return {}.%FromJSON($G(^ProgressInfo(pKey, pSubKey), "{}"))
+}
+
+ClassMethod ClearProgressInfo(pKey As %String, pTimeoutSeconds As %Integer = "")
+{
+    If (pTimeoutSeconds '= "") {
+        Hang pTimeoutSeconds
+    }
+    Kill ^ProgressInfo(pKey)
 }
 
 }

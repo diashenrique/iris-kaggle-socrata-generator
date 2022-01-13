@@ -15,6 +15,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Route Url="/search" Method="POST" Call="SearchDataset" Cors="true"/>
 <!-- Dataset importer. Examples: (1) {"provider":"socrata", "datasetId":"n9tp-i3k3"}, (2) {"provider":"kaggle", "datasetId":"joniarroba/noshowappointments", "credentials":"kaggle"} -->
 <Route Url="/import" Method="POST" Call="ImportDataset" Cors="true"/>
+<!-- Dataset importer status retriever. -->
+<Route Url="/import/status/:progressInfoKey" Method="GET" Call="GetImportDatasetProgress" Cors="true"/>
 <!-- Credentials creation/update. Example: {"key":"kaggle", "username":"<your-username>", "password":"<your-password>"} -->
 <Route Url="/credentials" Method="POST" Call="CreateUpdateCredentials" Cors="true"/>
 <!-- Credentials removal -->
@@ -39,6 +41,14 @@ ClassMethod ImportDataset() As %Status
 {
     Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
     Set response = service.Import(%request.Content)
+    Return ..ProcessResult($$$OK, response)
+}
+
+/// Description
+ClassMethod GetImportDatasetProgress(pProgressInfoKey As %String) As %Status
+{
+    Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
+    Set response = service.GetProgressInfo(pProgressInfoKey)
     Return ..ProcessResult($$$OK, response)
 }
 
