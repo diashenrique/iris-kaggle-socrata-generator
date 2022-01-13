@@ -34,6 +34,8 @@ $ docker-compose up -d
 
 ## How to Test it
 
+### Socrata
+
 For this initial release, we are using Socrata APIs to search and download and speficic dataset.
 
 Open the API tool of your preference like [Postman](https://www.postman.com/), [Hoppscotch](https://hoppscotch.io/) 
@@ -67,8 +69,51 @@ Records imported: 26
 After the command above, your dataset it's ready to use! 
 ![Socrata Return Dataset](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/socrata_sql_afterImport.png)
 
+### Kaggle
+
+To use the datasets from Kaggle, you need to register on the [website](https://www.kaggle.com/). After that, you need to create an API token to use Kaggle's API.
+
+![Kaggle Token Creation](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/kaggle-account-create-api.png)
+
+Now, just like with Socrata, you can use the API to search and download the dataset.
+
+```
+GET> https://www.kaggle.com/api/v1/datasets/list?search=appointments
+```
+
+This endpoint will return all healthcare related datasets, like the image below:
+![Kaggle Return Dataset](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/kaggle-get-datasetlist.png)
+
+Now, get the ref value. In this case the ref is: "joniarroba/noshowappointments"
+
+The parameters below "_your-username_", and "_your-password_" are the parameters provided by Kaggle when you create the API token.
+
+```
+IRISAPP>Set crendtials = ##class(dc.dataset.importer.service.CredentialsService).%New()
+
+IRISAPP>Do crendtials.SaveCredentials("kaggle", "<your-username>", "<your-password>")
+
+IRISAPP>Set api = ##class(dc.dataset.importer.service.kaggle.KaggleApi).%New()
+
+IRISAPP>Do api.InstallDataset({"datasetId":"joniarroba/noshowappointments", "credentials":"kaggle", "verbose":true})
+
+Class name: dc.dataset.imported.DsNoshowappointments
+Header: PatientId INTEGER,AppointmentID INTEGER,Gender VARCHAR(250),ScheduledDay DATE,AppointmentDay DATE,Age INTEGER,Neighbourhood VARCHAR(250),Scholarship INTEGER,Hipertension INTEGER,Diabetes INTEGER,Alcoholism INTEGER,Handcap INTEGER,SMS_received INTEGER,No-show VARCHAR(250)
+Records imported: 259
+```
+
+After the command above, your dataset it's ready to use!
+
+![Kaggle Select](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/kaggle-select.png)
+
+## Graphic User Interface
+
+We're offering a GUI to install the dataset to make things easier. But this is something that we like to discuss in our next article. In the meanwhile, you can check a sneak peek below while we are polishing a few things before the official release:
+
+![Socrata Dataset list](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/dataset-interface.png)
+
+![Socrata Return Dataset](https://raw.githubusercontent.com/diashenrique/iris-kaggle-socrata-generator/master/images/ui-download-preview.gif)
 ## Dream team
 
 * [Henrique Dias](https://community.intersystems.com/user/henrique-dias-2)
 * [José Roberto Pereira](https://community.intersystems.com/user/jos%C3%A9-roberto-pereira-0)
-  
