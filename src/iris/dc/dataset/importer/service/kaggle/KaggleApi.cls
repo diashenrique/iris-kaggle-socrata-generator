@@ -100,7 +100,10 @@ Method ProcessInstallation() As %DynamicObject
         $$$TOE(st, ##class(%File).Delete(fileName))
     }
 
-    Throw:($IsObject(ex)) ex
+    If ($IsObject(ex)) {
+        Do $System.OBJ.Delete(fqn, "/display=none")
+        Throw ex
+    }
 
     Set retorno.className = fqn
     Set retorno.columns = rowType
