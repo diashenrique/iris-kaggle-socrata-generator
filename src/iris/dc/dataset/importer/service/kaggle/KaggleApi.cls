@@ -89,15 +89,18 @@ Method ProcessInstallation() As %DynamicObject
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
     Set verbose = $Case(..DatasetParams.verbose, "":0, :..DatasetParams.verbose)
+    Set ex = ""
     Try {
-        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, verbose))
+        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, 0, .recordsCount, verbose))
     } Catch(e) {
-        Throw ##class(%Exception.General).%New(%sqlcontext.%Message)
+        Set ex = ##class(%Exception.General).%New(%sqlcontext.%Message)
     }
 
     If ('..DatasetParams.keepFile) {
         $$$TOE(st, ##class(%File).Delete(fileName))
     }
+
+    Throw:($IsObject(ex)) ex
 
     Set retorno.className = fqn
     Set retorno.columns = rowType

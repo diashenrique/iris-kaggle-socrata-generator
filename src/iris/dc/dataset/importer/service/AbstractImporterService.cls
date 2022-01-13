@@ -94,7 +94,17 @@ Method FixCsvHeader() [ Private ]
 Method FixColName(pColName As %String) As %String [ Private ]
 {
     // insert here all kind of rule for fixing col name translation to IRIS class properties...
-    Set pColName = $Translate(pColName, "()", "")   // remove brackets
+    Set pColName = $Translate(pColName, " !@#$%¨&*()-_=+[]{}~^.:/?\|'ªº", "")
+
+    // ugly hack to ensure that col names are unique
+    // todo: create a better approach...
+    Set lst = $LFS(pColName, ",")
+    Set len = $LL(lst)
+    For i = 1:1:len {
+        Set $List(lst, i) = $LG(lst, i)_i
+    }
+    Set pColName = $LTS(lst, ",")
+
     Return pColName
 }
 

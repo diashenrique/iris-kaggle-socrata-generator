@@ -61,10 +61,6 @@ Method ProcessInstallation() As %DynamicObject
         "warnings": []
     }
 
-    #; Set datasetId = ..DatasetParams.datasetId
-    #; If (datasetId = "") {
-    #;     Throw ##class(%Exception.General).%New("In order to install a Socrata dataset you must provide an ID.")
-    #; }
     Set datasetId = ..GetDatasetId()
 
     Do ..GetCatalog()
@@ -86,15 +82,18 @@ Method ProcessInstallation() As %DynamicObject
     Set fileName = ..DownloadInfo.fileName
     Set fqn = ..GetClassFQN(packageName, className)
     Set verbose = $Case(..DatasetParams.verbose, "":0, :..DatasetParams.verbose)
+    Set ex = ""
     Try {
-        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, , .recordsCount, verbose))
+        $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, 0, .recordsCount, verbose))
     } Catch(e) {
-        Throw ##class(%Exception.General).%New(%sqlcontext.%Message)
+        Set ex = ##class(%Exception.General).%New(%sqlcontext.%Message)
     }
 
     If ('..DatasetParams.keepFile) {
-        $$$TOE(st, ##class(%File).Delete(fileName))
+        #; $$$TOE(st, ##class(%File).Delete(fileName))
     }
+
+    Throw:($IsObject(ex)) ex
 
     Set retorno.className = fqn
     Set retorno.columns = rowType
@@ -110,9 +109,6 @@ Method GetClassName() As %String
     If (className = "") {
         Set className = ..DatasetParams.datasetId
         Set className = ..Catalog.results.%Get(0).resource.name
-        #; Set className = $ZCVT("DS "_className, "W") // converts to CamelCase
-        #; Set className = $TR(className, " -_", "") // remove non-valid chars
-        #; Set className = $Extract(className, 1, 60) // classes name must have length up to 60
         Set className = ..FixClassName(className)
     }
     Return className
