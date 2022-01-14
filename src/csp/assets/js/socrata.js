@@ -74,11 +74,26 @@ $(function () {
         $("#detail-dataTable > tbody").append("<tr><td>" + dataDetails.resource.columns_name[index] + "</td><td>" + dataDetails.resource.columns_field_name[index] + "</td><td>" + dataDetails.resource.columns_datatype[index] + "</td></tr>");
       });
     }
+    
+    function finishSwalLoadingSuccess(response) {
+      Swal.fire(
+        "Success!",
+        getSuccessMsg(response),
+        "success"
+      );
+    }
+    
+    function finishSwalLoadingError(error) {
+      Swal.fire(
+        "Internal Error",
+        getErrorMsg(error),
+        "error"
+      );
+    }
 
     $("#download-btn").on('click', function () {
       
       if ($("#license-dataset").html().length === 0) {
-
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -90,12 +105,11 @@ $(function () {
           buttonsStyling: false
         });
 
-
       } else {
 
         Swal.fire({
           title: 'Downloading...',
-          text: 'Your dataset in on the way!',
+          html: 'Your dataset in on the way!<br/><div id="progressDiv"></div>',
           showConfirmButton: false,
           didOpen: () => {
             Swal.showLoading();
@@ -112,19 +126,35 @@ $(function () {
                 "datasetId": datasetId
               }),
               "error": function (error) {
-                Swal.fire(
-                  "Internal Error",
-                  getErrorMsg(error),
-                  "error"
-                );
+                finishSwalLoadingError(error);
               }
             };
             return $.ajax(settings).done(function (response) {
-              Swal.fire(
-                "Success!",
-                getSuccessMsg(response),
-                "success"
-              );
+              const progressInfoId = response.ProgressInfoKey;
+              const intId = setInterval(() => {
+                $.ajax({
+                  "url": `/dataset/importer/import/status/${progressInfoId}`,
+                  "method": "GET",
+                  "timeout": 0,
+                  "headers": {
+                    "Content-Type": "application/json"
+                  },
+                  "error": function (error) {
+                    clearInterval(intId);
+                    finishSwalLoadingError(error);
+                  }
+                }).done(response => {
+                  const el = Swal.getHtmlContainer().querySelector('#progressDiv');
+                  el.textContent = `${response.status}`;
+                  if (response.status === "success") {
+                    clearInterval(intId);
+                    finishSwalLoadingSuccess(response.data);
+                  } else if (response.status === "error") {
+                    clearInterval(intId);
+                    finishSwalLoadingError(response.data);
+                  }
+                });
+              }, 1000);
             });
           }
         });
@@ -132,11 +162,15 @@ $(function () {
     });
 
     function getErrorMsg(error) {
-      if (error && typeof(error) === "object") {
-        if (error.status && error.status.toString() === "401") {
-          return error.statusText;
-        } else if (error.responseJSON && error.responseJSON.summary) {
-          return error.responseJSON.summary;
+      if (error) {
+        if (typeof(error) === "object") {
+          if (error.status && error.status.toString() === "401") {
+            return error.statusText;
+          } else if (error.responseJSON && error.responseJSON.summary) {
+            return error.responseJSON.summary;
+          }
+        } else {
+          return error;
         }
       }
       return "";
