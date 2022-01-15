@@ -61,7 +61,7 @@
                 <li class="nav-item nav-search"><a class="nav-link nav-link-search"><i class="ficon" data-feather="search"></i></a>
                     <div class="search-input">
                         <div class="search-input-icon"><i data-feather="search"></i></div>
-                        <input class="form-control input" type="text" placeholder="Explore Kaggle Datasets..." tabindex="-1" data-search="search">
+                        <input id="idSearchKaggle" class="form-control input" type="text" placeholder="Explore Kaggle Datasets..." tabindex="-1" data-search="search">
                         <div class="search-input-close"><i data-feather="x"></i></div>
                         <ul class="search-list search-list-main"></ul>
                     </div>
@@ -151,18 +151,15 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <table class="datatables-basic table">
+                                <table id="kaggle-dataTable" class="datatables-basic table">
                                     <thead>
                                         <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th>id</th>
+                                            <th>ID</th>
                                             <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Date</th>
-                                            <th>Salary</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th>Views Total</th>
+                                            <th>Download Count</th>
+                                            <th>License</th>
+                                            <th>Link</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -207,6 +204,8 @@
     <script src="app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
     <script src="app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
     <script src="app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+    <script src="app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+    <script src="app-assets/vendors/js/extensions/polyfill.min.js"></script>
     <!-- END: Page Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -215,6 +214,7 @@
     <!-- END: Theme JS-->
 
     <!-- BEGIN: Page JS-->
+    <script src="assets/js/search-dataset.js"></script>
     <script src="assets/js/kaggle.js"></script>
     <!-- END: Page JS-->
 
