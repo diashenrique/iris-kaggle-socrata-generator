@@ -5,6 +5,9 @@
 $(function () {
   'use strict';
 
+  // DataTable instance
+  let table = null;
+
   function searchSocrata(query) {
   
     // check if query is empty or not
@@ -24,8 +27,15 @@ $(function () {
     }
 
     var settings = {
-      "url": "https://api.us.socrata.com/api/catalog/v1?only=dataset&q=" + query,
-      "method": "GET",
+      "url": "/dataset/importer/search",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "data": JSON.stringify({
+        "provider": "socrata", 
+        "terms": query
+      }),
       "timeout": 0,
     };
   
@@ -34,7 +44,7 @@ $(function () {
   
       var data = response.results;
   
-      var table = $("#socrata-dataTable").DataTable({
+      table = $("#socrata-dataTable").DataTable({
         "dom": '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         "processing": true,
         "data": data,
@@ -220,13 +230,8 @@ $(function () {
         $("#updatedate-dataset").text("");
         $("#detail-dataTable > tbody").empty();
       }
-  
-  
-  
     });
   }
-
-
 
   // check for enter key pressed and call search function 
 
@@ -236,6 +241,9 @@ $(function () {
       //alert(searchValue);
       $(':focus').blur()
       
+      if (table && table.destroy) {
+        table.destroy();
+      }
       searchSocrata(searchValue);
     }
    });   
