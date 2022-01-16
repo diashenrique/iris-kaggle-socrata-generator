@@ -29,6 +29,10 @@ Method SearchDataset(pParams As %DynamicObject) As %DynamicObject [ Abstract ]
 {
 }
 
+Method GetDatasetDetails(pParams As %DynamicObject) As %DynamicObject [ Abstract ]
+{
+}
+
 Method InstallDataset(pDatasetParams As %DynamicObject)
 {
     Do ..SetProgressInfo(..ProgressInfoKey, {

@@ -21,6 +21,17 @@ Method SearchDataset(pParams As %DynamicObject) As %DynamicObject
     Return response
 }
 
+Method GetDatasetDetails(pParams As %DynamicObject) As %DynamicObject
+{
+    #; Set params = {
+    #;     "Url": ("https://www.kaggle.com/api/v1/datasets/list/"_pParams.datasetId)
+    #; }
+    #; Set params = ..InsertKaggleCredentials(pParams, params)
+    #; Set response = ..HttpUtil.HttpGetJson(params)
+    Set response = {}
+    Return response
+}
+
 Method GetDatasetId() As %String
 {
     Set datasetId = ..DatasetParams.datasetId

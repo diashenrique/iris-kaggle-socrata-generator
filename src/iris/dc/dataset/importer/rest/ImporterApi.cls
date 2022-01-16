@@ -13,6 +13,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Routes>
 <!-- Dataset search: Examples: (1) {"provider":"socrata", "terms":"healthcare diabets"}, (2) {"provider":"kaggle", "terms":"healthcare diabets", "credentials":"kaggle"} -->
 <Route Url="/search" Method="POST" Call="SearchDataset" Cors="true"/>
+<!-- Dataset details: Examples:  -->
+<Route Url="/details" Method="POST" Call="GetDatasetDetails" Cors="true"/>
 <!-- Dataset importer. Examples: (1) {"provider":"socrata", "datasetId":"n9tp-i3k3"}, (2) {"provider":"kaggle", "datasetId":"joniarroba/noshowappointments", "credentials":"kaggle"} -->
 <Route Url="/import" Method="POST" Call="ImportDataset" Cors="true"/>
 <!-- Dataset importer status retriever. -->
@@ -33,6 +35,14 @@ ClassMethod SearchDataset() As %Status
 {
     Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
     Set response = service.Search(%request.Content)
+    Return ..ProcessResult($$$OK, response)
+}
+
+/// Description
+ClassMethod GetDatasetDetails() As %Status
+{
+    Set service = ##class(dc.dataset.importer.service.ImporterService).%New()
+    Set response = service.GetDatasetDetails(%request.Content)
     Return ..ProcessResult($$$OK, response)
 }
 

@@ -25,6 +25,14 @@ Method Search(pParams As %DynamicObject) As %DynamicObject
 }
 
 /// Description
+Method GetDatasetDetails(pParams As %DynamicObject) As %DynamicObject
+{
+    Set api = ..ApiFactory(pParams)
+    Set response = api.GetDatasetDetails(pParams)
+    Return response
+}
+
+/// Description
 Method Import(pParams As %DynamicObject) As %DynamicObject
 {
     Set api = ..ApiFactory(pParams)
