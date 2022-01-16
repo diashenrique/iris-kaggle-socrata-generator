@@ -54,144 +54,144 @@
   }
 
   searchKaggle.details = function(pArrayIndex, data) {
-    // const datasetId = data[pArrayIndex].ref;
-    // var settings = {
-    //   "url": "/dataset/importer/details",
-    //   "method": "POST",
-    //   "headers": {
-    //     "Content-Type": "application/json"
-    //   },
-    //   "data": JSON.stringify({
-    //     "provider": "kaggle",
-    //     "datasetId": datasetId,
-    //     "credentials": "kaggle"
-    //   }),
-    //   "timeout": 0,
-    //   "error": (error) => {
-    //       finishSwalLoadingError(error);
-    //   }
-    // };
-    // $.ajax(settings).done(function(response) {
-    //   setDetails(response);
-    // });
+    const datasetId = data[pArrayIndex].ref;
+    var settings = {
+      "url": "/dataset/importer/details",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "data": JSON.stringify({
+        "provider": "kaggle",
+        "datasetId": datasetId,
+        "credentials": getKaggleConfig().key
+      }),
+      "timeout": 0,
+      "error": (error) => {
+          finishSwalLoadingError(error);
+      }
+    };
+    $.ajax(settings).done(function(response) {
+      setDetails(response);
+    });
 
-    const response = {
-      "datasetFiles": [
-        {
-          "ref": "KaggleV2-May-2016.csv",
-          "datasetRef": "joniarroba/noshowappointments",
-          "ownerRef": "joniarroba",
-          "name": "KaggleV2-May-2016.csv",
-          "creationDate": "2017-08-20T23:49:38.6Z",
-          "description": null,
-          "fileType": ".csv",
-          "url": "https://www.kaggle.com/",
-          "totalBytes": 10739535,
-          "columns": [
-            {
-              "order": 0,
-              "name": "PatientId",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 1,
-              "name": "AppointmentID",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 2,
-              "name": "Gender",
-              "type": "String",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 3,
-              "name": "ScheduledDay",
-              "type": "DateTime",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 4,
-              "name": "AppointmentDay",
-              "type": "DateTime",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 5,
-              "name": "Age",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 6,
-              "name": "Neighbourhood",
-              "type": "String",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 7,
-              "name": "Scholarship",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 8,
-              "name": "Hipertension",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 9,
-              "name": "Diabetes",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 10,
-              "name": "Alcoholism",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 11,
-              "name": "Handcap",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 12,
-              "name": "SMS_received",
-              "type": "Uuid",
-              "originalType": "",
-              "description": null
-            },
-            {
-              "order": 13,
-              "name": "No-show",
-              "type": "Boolean",
-              "originalType": "",
-              "description": null
-            }
-          ]
-        }
-      ],
-      "errorMessage": null
-    }
-    setDetails(response);
+    // const response = {
+    //   "datasetFiles": [
+    //     {
+    //       "ref": "KaggleV2-May-2016.csv",
+    //       "datasetRef": "joniarroba/noshowappointments",
+    //       "ownerRef": "joniarroba",
+    //       "name": "KaggleV2-May-2016.csv",
+    //       "creationDate": "2017-08-20T23:49:38.6Z",
+    //       "description": null,
+    //       "fileType": ".csv",
+    //       "url": "https://www.kaggle.com/",
+    //       "totalBytes": 10739535,
+    //       "columns": [
+    //         {
+    //           "order": 0,
+    //           "name": "PatientId",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 1,
+    //           "name": "AppointmentID",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 2,
+    //           "name": "Gender",
+    //           "type": "String",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 3,
+    //           "name": "ScheduledDay",
+    //           "type": "DateTime",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 4,
+    //           "name": "AppointmentDay",
+    //           "type": "DateTime",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 5,
+    //           "name": "Age",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 6,
+    //           "name": "Neighbourhood",
+    //           "type": "String",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 7,
+    //           "name": "Scholarship",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 8,
+    //           "name": "Hipertension",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 9,
+    //           "name": "Diabetes",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 10,
+    //           "name": "Alcoholism",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 11,
+    //           "name": "Handcap",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 12,
+    //           "name": "SMS_received",
+    //           "type": "Uuid",
+    //           "originalType": "",
+    //           "description": null
+    //         },
+    //         {
+    //           "order": 13,
+    //           "name": "No-show",
+    //           "type": "Boolean",
+    //           "originalType": "",
+    //           "description": null
+    //         }
+    //       ]
+    //     }
+    //   ],
+    //   "errorMessage": null
+    // }
+    // setDetails(response);
   }
 
   function setDetails(response) {
@@ -203,13 +203,53 @@
     $("#id-dataset").text("");
   }
 
-  // check for enter key pressed and call search function 
   $('#idSearchKaggle').keypress(function (e) {
     if (e.which == 13) {
       var searchValue = $('#idSearchKaggle').val();
       $(':focus').blur();
-      searchKaggle.search(searchValue, "#kaggle-dataTable", "kaggle", "kaggle");
+      searchKaggle.search(searchValue, "#kaggle-dataTable", "kaggle", getKaggleConfig().key);
     }
+  });
+
+  function getKaggleConfig() {
+    return JSON.parse(localStorage.getItem("kaggleConfig") || "{}")
+  }
+
+  function setKaggleConfig(key, username) {
+    localStorage.setItem("kaggleConfig", JSON.stringify({"key":key, "username":username}));
+  }
+
+  $('#kaggleConfigModal').on('shown.bs.modal', function (e) {
+    const config = getKaggleConfig();
+    $('#modalConfigKey').val(config.key);
+    $('#modalUsername').val(config.username);
+  });
+
+  $('#saveKaggleConfig').click(function (e) {
+    const key = $('#modalConfigKey').val();
+    const username = $('#modalUsername').val();
+    const password = $('#modalPassword').val();
+    const settings = {
+      "url": "/dataset/importer/credentials",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "dataType": "text",
+      "data": JSON.stringify({
+        "key": key, 
+        "username": username, 
+        "password": password
+      }),
+      "timeout": 0,
+      "error": (error) => {
+          finishSwalLoadingError(error);
+      }
+    };
+    $.ajax(settings).done(function() {
+      setKaggleConfig(key, username);
+      finishSwalLoadingSuccess("Crendentials saved!");
+    });
   });
 
 });

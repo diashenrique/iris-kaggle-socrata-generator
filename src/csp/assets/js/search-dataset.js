@@ -128,45 +128,47 @@ function SearchDataset() {
           }
         });
       });
+    }
+  }
   
-      function getErrorMsg(error) {
-        if (error) {
-          if (typeof (error) === "object") {
-            if (error.status && error.status.toString() === "401") {
-              return error.statusText;
-            } else if (error.responseJSON && error.responseJSON.summary) {
-              return error.responseJSON.summary;
-            }
-          } else {
-            return error;
-          }
+  function getErrorMsg(error) {
+    if (error) {
+      if (typeof (error) === "object") {
+        if (error.status && error.status.toString() === "401") {
+          return error.statusText;
+        } else if (error.responseJSON && error.responseJSON.summary) {
+          return error.responseJSON.summary;
         }
-        return "";
-      }
-
-      function getSuccessMsg(response) {
-        if (response) {
-          if (response.className) {
-            return `There was imported <b>${response.records} records</b> on class <b>${response.className}</b>.`;
-          }
-        }
-        return "";
-      }
-  
-      function finishSwalLoadingSuccess(response) {
-        Swal.fire(
-          "Success!",
-          getSuccessMsg(response),
-          "success"
-        );
-      }
-
-      function finishSwalLoadingError(error) {
-        Swal.fire(
-          "Internal Error",
-          getErrorMsg(error),
-          "error"
-        );
+      } else {
+        return error;
       }
     }
+    return "";
+  }
+
+  function getSuccessMsg(response) {
+    if (response) {
+      if (response.className) {
+        return `There was imported <b>${response.records} records</b> on class <b>${response.className}</b>.`;
+      } else {
+          return response
+      }
+    }
+    return "";
+  }
+
+  function finishSwalLoadingSuccess(response) {
+    Swal.fire(
+      "Success!",
+      getSuccessMsg(response),
+      "success"
+    );
+  }
+
+  function finishSwalLoadingError(error) {
+    Swal.fire(
+      "Internal Error",
+      getErrorMsg(error),
+      "error"
+    );
   }
