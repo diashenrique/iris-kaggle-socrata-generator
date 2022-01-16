@@ -56,8 +56,24 @@ function SearchDataset() {
         $(`${tableId} tbody`).on('click', 'tr', function() {
           _this.clearDetails();
           _this.details(table.row(this).index(), data);
-  
-          $("#xlarge").modal('show');
+
+          $.blockUI({
+            message:
+              '<div class="d-flex justify-content-center align-items-center"><p class="me-50 mb-0">Loading details...</p> <div class="spinner-grow spinner-grow-sm text-white" role="status"></div> </div>',
+            timeout: 1000,
+            css: {
+              backgroundColor: 'transparent',
+              color: '#fff',
+              border: '0'
+            },
+            overlayCSS: {
+              opacity: 0.5
+            }
+          });
+
+          setTimeout(function () {
+            $("#xlarge").modal('show');
+          }, 1000);
         });
   
         $("#download-btn").on('click', function () {

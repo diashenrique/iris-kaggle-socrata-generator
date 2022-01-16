@@ -16,6 +16,8 @@
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/extensions/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/tables/datatable/buttons.bootstrap5.min.css">
@@ -63,7 +65,6 @@
                         <div class="search-input-icon"><i data-feather="search"></i></div>
                         <input id="idSearchKaggle" class="form-control input" type="text" placeholder="Explore Kaggle Datasets..." tabindex="-1" data-search="search">
                         <div class="search-input-close"><i data-feather="x"></i></div>
-                        <ul class="search-list search-list-main"></ul>
                     </div>
                 </li>
                 <li class="nav-item nav-search">
@@ -193,77 +194,37 @@
                                                     <div class="card-body invoice-padding pt-1">
                                                         <div class="row invoice-spacing">
                                                             <div class="col-xl-6 p-1">
-                                                                <h6 id="id-dataset" class="mb-2">Dataset ID <a
-                                                                        href="#"></a></h6>
-                                                                <p id="name-dataset" class="card-text mb-25">Health Care
-                                                                    Provider Credential Data</p>
-                                                                <p id="description-dataset" class="card-text mb-25">
-                                                                    DESCRIPTION Health Care Provider Credential Data</p>
-                                                                <p id="domain-dataset" class="card-text mb-25">domain
-                                                                </p>
-                                                                <p id="license-dataset" class="card-text mb-25">license
-                                                                </p>
-                                                                <p id="domain-tag-dataset" class="card-text mb-25">
-                                                                    domain_tags</p>
+                                                                <h6 id="id-dataset" class="mb-2"><a href="#"></a></h6>
+                                                                <p id="name-dataset" class="card-text mb-25"></p>
+                                                                <p id="description-dataset" class="card-text mb-25"></p>
+                                                                <p id="filetype-dataset" class="card-text mb-25"></p>
                                                             </div>
                                                             <div class="col-xl-2 p-1 mt-xl-0 mt-2">
-                                                                <h6 class="mb-2">Owner / Creator</h6>
+                                                                <h6 class="mb-2">Owner</h6>
                                                                 <table>
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td class="pe-1"><span
-                                                                                    class="fw-bold">Owner</span></td>
                                                                             <td id="owner-dataset"></td>
                                                                         </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="col-xl-2 p-1 mt-xl-0 mt-2">
+                                                                <h6 class="mb-2">Total Size</h6>
+                                                                <table>
+                                                                    <tbody>
                                                                         <tr>
-                                                                            <td class="pe-1"><span
-                                                                                    class="fw-bold">Creator</span></td>
-                                                                            <td id="creator-dataset"></td>
+                                                                            <td id="id-totalsize"></td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
                                                             <div class="col-xl-2 p-1 mt-xl-0 mt-2">
-                                                                <h6 class="mb-2">Views / Download</h6>
+                                                                <h6 class="mb-2">Created at</h6>
                                                                 <table>
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td class="pe-1"><span class="fw-bold">View
-                                                                                    last Week</span></td>
-                                                                            <td id="lastweek-dataset"></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="pe-1"><span class="fw-bold">View
-                                                                                    last Month</span></td>
-                                                                            <td id="lastmonth-dataset"></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="pe-1"><span class="fw-bold">View
-                                                                                    total</span></td>
-                                                                            <td id="viewtotal-dataset"></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="pe-1"><span
-                                                                                    class="fw-bold">Download
-                                                                                    Total</span></td>
-                                                                            <td id="download-dataset"></td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="col-xl-2 p-1 mt-xl-0 mt-2">
-                                                                <h6 class="mb-2">Dates</h6>
-                                                                <table>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td class="pe-1"><span
-                                                                                    class="fw-bold">Created</span></td>
                                                                             <td id="createdate-dataset"></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="pe-1"><span
-                                                                                    class="fw-bold">Updated</span></td>
-                                                                            <td id="updatedate-dataset"></td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
@@ -279,8 +240,8 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>Columns Name</th>
-                                                                    <th>Columns Field Name</th>
-                                                                    <th>Columns Datatype</th>
+                                                                    <th>Columns Type</th>
+                                                                    <th>Columns Description</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody></tbody>
@@ -342,8 +303,7 @@
                         </div>
                     </div>
                 </div>
-                <!--/ add new card modal  -->
-            </div>
+                <!--/ add new card modal  -->                
             </div>
         </div>
     </div>
