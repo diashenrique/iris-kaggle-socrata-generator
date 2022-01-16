@@ -89,7 +89,8 @@ function SearchDataset() {
                   },
                   "data": JSON.stringify({
                     "provider": provider,
-                    "datasetId": datasetId
+                    "datasetId": datasetId,
+                    "credentials": credentialsKey
                   }),
                   "error": function (error) {
                     finishSwalLoadingError(error);
