@@ -79,14 +79,38 @@ Method HttpGetJson(pHttpParams As %DynamicObject) As %DynamicObject
     Return ##class(%DynamicObject).%FromJSON(json)
 }
 
-Method HttpDownloadCsvFile(pHttpParams As %DynamicObject) As %DynamicObject
+Method HttpDownload(pHttpParams As %DynamicObject) As %DynamicObject
+{
+    Set retorno = {}
+    Set request = ..CreateHttpRequest({
+        "Url": (pHttpParams.Url),
+        "username": (pHttpParams.username),
+        "password": (pHttpParams.password)
+    })
+    $$$TOE(st, request.Get(pHttpParams.Url))
+    Set responseContentType = request.HttpResponse.ContentType
+    If (responseContentType [ "text/csv") {
+        Set retorno = ..HttpDownloadCsvFile(pHttpParams, request)
+    } ElseIf(responseContentType [ "application/zip") {
+        Set retorno = ..HttpDownloadZIP(pHttpParams, request)
+    } Else {
+        Throw ##class(%Exception.General).%New("Unsupported content type: "_responseContentType_".")
+    }
+    Return retorno
+}
+
+Method HttpDownloadCsvFile(pHttpParams As %DynamicObject, pRequest As %Net.HttpRequest = "") As %DynamicObject
 {
     Set retorno = {}
 
     // todo: validate content-type using a HEAD
 
-    Set request = ..CreateHttpRequest(pHttpParams)
-    $$$TOE(st, request.Get(pHttpParams.Url))
+    If ($IsObject(pRequest)) {
+        Set request = pRequest
+    } Else {
+        Set request = ..CreateHttpRequest(pHttpParams)
+        $$$TOE(st, request.Get(pHttpParams.Url))
+    }
 
     Do ..ValidateCsvContentType(request, "text/csv")
     Set fileName = ..SaveRequestToFile(request)
@@ -96,7 +120,7 @@ Method HttpDownloadCsvFile(pHttpParams As %DynamicObject) As %DynamicObject
 }
 
 /// Description
-Method HttpDownloadZIP(pHttpParams As %DynamicObject) As %DynamicObject
+Method HttpDownloadZIP(pHttpParams As %DynamicObject, pRequest As %Net.HttpRequest = "") As %DynamicObject
 {
     Set retorno = {
         "warnings": []
@@ -104,12 +128,16 @@ Method HttpDownloadZIP(pHttpParams As %DynamicObject) As %DynamicObject
 
     // todo: validate content-type using a HEAD
 
-    Set request = ..CreateHttpRequest({
-        "Url": (pHttpParams.Url),
-        "username": (pHttpParams.username),
-        "password": (pHttpParams.password)
-    })
-    $$$TOE(st, request.Get(pHttpParams.Url))
+    If ($IsObject(pRequest)) {
+        Set request = pRequest
+    } Else {
+        Set request = ..CreateHttpRequest({
+            "Url": (pHttpParams.Url),
+            "username": (pHttpParams.username),
+            "password": (pHttpParams.password)
+        })
+        $$$TOE(st, request.Get(pHttpParams.Url))
+    }
     Do ..ValidateCsvContentType(request, "application/zip")
     Set fileName = ..SaveRequestToFile(request)
 

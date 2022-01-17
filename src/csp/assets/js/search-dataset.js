@@ -77,7 +77,7 @@ function SearchDataset() {
         });
   
         $("#download-btn").on('click', function () {
-          if ($("#license-dataset").html().length === 0) {
+          if ($("#license-dataset").html() && $("#license-dataset").html().length === 0) {
             Swal.fire({
               icon: 'error',
               title: 'Oops...',

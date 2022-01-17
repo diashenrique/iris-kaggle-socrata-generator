@@ -44,6 +44,7 @@ Method GetMetadata() As %DynamicObject
 {
     If ('$IsObject(..Metadata)) || (..Metadata.%ToJSON() = "{}") {
         Set datasetId = ..GetDatasetId()
+        Set datasetId = $LTS($List($LFS(datasetId, "/"), 1, 2), "/")
         Set paramsMetadata = {
             "Url": ("https://www.kaggle.com/api/v1/datasets/list/"_datasetId)
         }
@@ -88,12 +89,14 @@ Method ProcessInstallation() As %DynamicObject
     Do ..SetProgressInfo(..ProgressInfoKey, {
         "status":"downloading"
     })
-    Set downloadUrl = "https://www.kaggle.com/api/v1/datasets/download/"_datasetId_"/"_fileId
+    #; Set downloadUrl = "https://www.kaggle.com/api/v1/datasets/download/"_datasetId_"/"_fileId
+    Set downloadUrl = "https://www.kaggle.com/api/v1/datasets/download/"_datasetId
     Set paramsDownload = {
         "Url": (downloadUrl)
     }
     Set paramsDownload = ..InsertKaggleCredentials(..DatasetParams, paramsDownload)
-    Set ..DownloadInfo = ..HttpUtil.HttpDownloadZIP(paramsDownload)
+    #; Set ..DownloadInfo = ..HttpUtil.HttpDownloadZIP(paramsDownload)
+    Set ..DownloadInfo = ..HttpUtil.HttpDownload(paramsDownload)
 
     Do ..FixCsvHeader()
 

@@ -17,24 +17,6 @@
       }, {
         "data": "title"
       }, {
-        "data": "totalBytes",
-        "render": function (data, type, row, meta) {
-          let label = "";
-          if (type === 'display') {
-            const units = ['B', 'KB', 'MB', 'GB', 'TB']
-            let n = parseInt(data);
-            for (const unit in units) {
-              if (n >= 1000) {
-                n = n / 1000
-              } else {
-                label = `${Math.round(n)} ${units[unit]}`
-                break;
-              }
-            }
-          }
-          return label;
-        }
-      }, {
         "data": "viewCount"
       }, {
         "data": "downloadCount"
@@ -85,7 +67,7 @@
     
     console.log("dataDetails", dataDetails);
     
-    $("#id-dataset").text(dataDetails.ref);
+    $("#id-dataset").text(`${dataDetails.datasetRef}/${dataDetails.ref}`);
     $("#name-dataset").text(dataDetails.name);
     $("#description-dataset").text(dataDetails.description);
     $("#filetype-dataset").text("file type: " + dataDetails.fileType);
