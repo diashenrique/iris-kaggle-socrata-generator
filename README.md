@@ -17,7 +17,7 @@ Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installi
 1. Clone/git pull the repo into any local directory
 
 ```
-$ git clone https://github.com/diashenrique/iris-rad-studio.git
+$ git clone https://github.com/diashenrique/iris-kaggle-socrata-generator.git
 ```
 
 2. Open the terminal in this directory and run:
