@@ -78,6 +78,10 @@ Method ValidateLicense()
 
 Method FixCsvHeader() [ Private ]
 {
+    // todo: I used an approach of edit the header in the original dataset instead of
+    // create a new file, fix its header and then copy all the rows. I did that way
+    // in order to avoid coping big files, but I couldn't handle properly such approach...
+    /// So it's better to change it, using the new file approach.
     Set csvHeader = ""
     Set headerLength = 0
 

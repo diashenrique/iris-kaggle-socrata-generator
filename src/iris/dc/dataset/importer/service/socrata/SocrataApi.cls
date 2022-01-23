@@ -106,6 +106,8 @@ Method ProcessInstallation() As %DynamicObject
     Set ex = ""
     Set recordsCount = 0
     Try {
+        // todo: in order to minimise errors, the flag to let CSVGEN guess the col type was 
+        // turned off; turn it on again and deal with such errors
         $$$TOE(st, ##class(community.csvgen).Generate(fileName, , fqn, .rowType, 0, .recordsCount, verbose))
     } Catch(e) {
         Set ex = ##class(%Exception.General).%New(%sqlcontext.%Message)
