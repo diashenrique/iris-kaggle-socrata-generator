@@ -1,4 +1,6 @@
 /// Description
+/// @see https://dev.socrata.com/
+/// @see https://socratadiscovery.docs.apiary.io/#reference/0/find-by-type/search-by-type
 Class dc.dataset.importer.service.socrata.SocrataApi Extends dc.dataset.importer.service.AbstractImporterService
 {
 

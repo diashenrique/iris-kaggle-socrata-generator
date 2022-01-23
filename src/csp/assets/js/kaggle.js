@@ -2,12 +2,12 @@
  * DataTables Basic
  */
 
- $(function () {
+$(function () {
   'use strict';
 
   const searchKaggle = new SearchDataset();
-  
-  searchKaggle.createTable = function(data, tableId) {
+
+  searchKaggle.createTable = function (data, tableId) {
     return $(tableId).DataTable({
       "dom": '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
       "processing": true,
@@ -35,7 +35,7 @@
     });
   }
 
-  searchKaggle.details = function(pArrayIndex, data) {
+  searchKaggle.details = function (pArrayIndex, data) {
     const datasetId = data[pArrayIndex].ref;
     var settings = {
       "url": "/dataset/importer/details",
@@ -50,23 +50,35 @@
       }),
       "timeout": 0,
       "error": (error) => {
-          finishSwalLoadingError(error);
+        finishSwalLoadingError(error);
       }
     };
-    $.ajax(settings).done(function(response) {
+    $.ajax(settings).done(function (response) {
+      if (!response.datasetFiles || !response.datasetFiles.length) {
+        finishSwalLoadingError("Something was wrong on getting the details. No files was retrieved.");
+        return;
+      }
+      // todo: allow users to navigate through dataset files instead of bring just the first one
+      response.datasetFiles = [
+        response.datasetFiles.filter(dataset => {
+          return dataset.fileType === ".csv"
+        }).sort((a, b) => {
+          if (a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          return 0;
+        })[0]
+      ];
       setDetails(response);
     });
   }
 
   function setDetails(response) {
-    
+
     $("#detail-dataTable > tbody").children().remove();
-
-
     var dataDetails = response.datasetFiles[0];
-    
+
     console.log("dataDetails", dataDetails);
-    
+
     $("#id-dataset").text(`${dataDetails.datasetRef}/${dataDetails.ref}`);
     $("#name-dataset").text(dataDetails.name);
     $("#description-dataset").text(dataDetails.description);
@@ -81,7 +93,7 @@
     }
   }
 
-  searchKaggle.clearDetails = function() {
+  searchKaggle.clearDetails = function () {
     $("#id-dataset").text("");
   }
 
@@ -113,7 +125,7 @@
   }
 
   function setKaggleConfig(key, username) {
-    localStorage.setItem("kaggleConfig", JSON.stringify({"key":key, "username":username}));
+    localStorage.setItem("kaggleConfig", JSON.stringify({ "key": key, "username": username }));
   }
 
   $('#kaggleConfigModal').on('shown.bs.modal', function (e) {
@@ -134,16 +146,16 @@
       },
       "dataType": "text",
       "data": JSON.stringify({
-        "key": key, 
-        "username": username, 
+        "key": key,
+        "username": username,
         "password": password
       }),
       "timeout": 0,
       "error": (error) => {
-          finishSwalLoadingError(error);
+        finishSwalLoadingError(error);
       }
     };
-    $.ajax(settings).done(function() {
+    $.ajax(settings).done(function () {
       setKaggleConfig(key, username);
       finishSwalLoadingSuccess("Crendentials saved!");
     });

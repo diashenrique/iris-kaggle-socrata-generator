@@ -1,4 +1,5 @@
 /// Description
+/// @see https://github.com/Kaggle/kaggle-api/blob/master/KaggleSwagger.yaml
 Class dc.dataset.importer.service.kaggle.KaggleApi Extends dc.dataset.importer.service.AbstractImporterService
 {
 
